@@ -7,31 +7,25 @@ import os
 
 load_dotenv()
 
-def get_binance_api_credentials(bot_id=None, testnet=False):
-    if testnet:
-        api_key = os.environ.get('BINANCE_TESTNET_API_KEY')
-        api_secret = os.environ.get('BINANCE_TESTNET_API_SECRET')
-    else:
-        if bot_id:
-            api_key = os.environ.get(f'BINANCE_BOT{bot_id}_API_KEY')
-            api_secret = os.environ.get(f'BINANCE_BOT{bot_id}_API_SECRET')
-        else:
-            api_key = os.environ.get('BINANCE_GENERAL_API_KEY')
-            api_secret = os.environ.get('BINANCE_GENERAL_API_SECRET')
-    
-    return api_key, api_secret
-
-
-def create_binance_client(bot_id=None, testnet=False):
+def create_binance_client():
     try:
-        api_key, api_secret = get_binance_api_credentials(bot_id, testnet)
-        return Client(api_key, api_secret, testnet=testnet)
+        api_key = os.environ.get('BINANCE_GENERAL_API_KEY')
+        api_secret = os.environ.get('BINANCE_GENERAL_API_SECRET')
+        return Client(api_key, api_secret)
     except Exception as e:
-        return False
+        return None
 
 
-def fetch_data(binance_client, symbol, interval='1h', lookback='2d', start_str=None, end_str=None):
+def fetch_data(
+    symbol='BTCUSDC', 
+    interval='1h', 
+    lookback='1000d', 
+    start_str=None, 
+    end_str=None
+    ):
+    
     try: 
+        binance_client = create_binance_client()
         klines = None
         if not start_str and not end_str:
             if lookback[-1] == 'h':

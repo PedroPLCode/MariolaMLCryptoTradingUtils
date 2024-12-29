@@ -1,14 +1,8 @@
-- uczenie nadzorowane,
-- klasyfikacja - etykiety ciągłe (Buy/Sell)
-- regresja - etykiety nieciągłe (procent o jaki wrosła cena na nast x okresach)
+scikit-learn
+Random Forest
 
-- jaki model?
-scikit-learn - Random Forest
-keras - sieci neuronowe LSTM
+keras
+PCM -> LSTM
 
-- ile cech w zbiorze uczącym? 
-20-50 dla prostych modeli
-1000 dla skomplikowanych modeli - wtedy konieczne PCM redukcja wielowymiarowości
-
-- jak duźy zbiór uczący?
-min 10x liczba kolumn
+-regresion
+-clasification

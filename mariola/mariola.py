@@ -1,12 +1,25 @@
-from calc_utils import calculate_technical_indicators
-from api_utils import (
-    create_binance_client,
-    fetch_data
-)
+from sklearn.preprocessing import MinMaxScaler
+from calc_utils import prepare_df_for_ml
+from api_utils import fetch_data
+from app_utils import save_df_info
 
-binance_client = create_binance_client(None)
 symbol='BTCUSDC'
 interval='1h'
-lookback='1000d'
-df = fetch_data(binance_client, symbol, interval, lookback)
-result = calculate_technical_indicators(df)
+lookback='10d'
+
+data_df = fetch_data(
+    symbol=symbol, 
+    interval=interval, 
+    lookback=lookback
+    )
+
+result_df = prepare_df_for_ml(
+    df=data_df, 
+    regresion=True,
+    clasification=True
+    )
+
+scaler = MinMaxScaler()
+scaled_data = scaler.fit_transform(result_df.dropna().values)
+
+save_df_info(result_df, 'output.txt')
