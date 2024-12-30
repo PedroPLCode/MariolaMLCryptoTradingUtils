@@ -4,5 +4,13 @@ Random Forest
 keras
 PCM -> LSTM
 
--regresion
--clasification
+clasification
+bool['marker_close_trade_success_in_next_14_periods']
+bool['marker_close_trade_success_in_next_28_periods']
+
+regresion
+float64['marker_close_pct_change_in_next_14_periods']
+float64['marker_close_pct_change_in_next_28_periods']
+
+add:
+try-catch blocks

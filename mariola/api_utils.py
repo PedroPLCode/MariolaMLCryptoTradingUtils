@@ -8,10 +8,23 @@ import os
 load_dotenv()
 
 def create_binance_client():
+    """
+    Creates and returns a Binance client using API keys from environment variables.
+    
+    Returns:
+        Client: A Binance client object, or None if an error occurs during client creation.
+        
+    Notes:
+        This function retrieves the Binance API key and secret from environment variables 
+        (`BINANCE_GENERAL_API_KEY` and `BINANCE_GENERAL_API_SECRET`), and initializes a 
+        Binance client using the `Client` class from the `binance` library.
+    """
+    
     try:
         api_key = os.environ.get('BINANCE_GENERAL_API_KEY')
         api_secret = os.environ.get('BINANCE_GENERAL_API_SECRET')
         return Client(api_key, api_secret)
+    
     except Exception as e:
         return None
 
@@ -23,6 +36,35 @@ def fetch_data(
     start_str=None, 
     end_str=None
     ):
+    """
+    Fetch historical market data (klines) from Binance for a given symbol and time range.
+    
+    Args:
+        symbol (str): The trading pair symbol (default is 'BTCUSDC').
+        interval (str): The time interval for each kline (default is '1h').
+        lookback (str): The lookback period for fetching data (e.g., '1000d' for 1000 days, '10h' for 10 hours).
+        start_str (str, optional): The start time for fetching data in 'YYYY-MM-DD HH:MM:SS' format. 
+                                   If not provided, the lookback period will be used.
+        end_str (str, optional): The end time for fetching data in 'YYYY-MM-DD HH:MM:SS' format.
+        
+    Returns:
+        pd.DataFrame: A DataFrame containing the historical kline data with the following columns:
+            ['open_time', 'open', 'high', 'low', 'close', 'volume', 'close_time', 
+             'quote_asset_volume', 'number_of_trades', 'taker_buy_base_asset_volume', 
+             'taker_buy_quote_asset_volume', 'ignore'].
+        None: If an error occurs during data retrieval (e.g., API exceptions, connection issues).
+        
+    Raises:
+        ValueError: If the lookback period format is unsupported.
+        BinanceAPIException: If the Binance API returns an error.
+        ConnectionError: If there is a connection issue.
+        TimeoutError: If the request times out.
+        
+    Notes:
+        - If no start and end time are provided, the function will use the lookback period to calculate 
+          the start time and fetch data from there.
+        - The function supports lookback periods in hours ('h'), days ('d'), and minutes ('m').
+    """
     
     try: 
         binance_client = create_binance_client()
@@ -67,6 +109,7 @@ def fetch_data(
         df['close'] = df['close'].astype(float)
         df['high'] = df['high'].astype(float)
         df['low'] = df['low'].astype(float)
+        
         return df
     
     except BinanceAPIException as e:

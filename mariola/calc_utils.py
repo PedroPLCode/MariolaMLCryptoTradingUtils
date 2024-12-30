@@ -1,15 +1,116 @@
 import pandas as pd
 import numpy as np
 import talib
-from app_utils import (
-    is_hammer,
-    is_morning_star,
-    is_bullish_engulfing
-)
 
-def prepare_df_for_ml(df=None, regresion=False, clasification=False):
+def is_hammer(df):
     """
-    xxx
+    Identifies hammer candlestick patterns in a DataFrame containing stock or cryptocurrency data.
+    
+    A hammer is a candlestick pattern where the real body is at the top of the candlestick, and 
+    the lower shadow is at least twice the size of the real body.
+    
+    Args:
+        df (pd.DataFrame): A DataFrame containing columns ['open', 'high', 'low', 'close'] representing 
+                            the open, high, low, and close prices of the candlesticks.
+                            
+    Returns:
+        pd.DataFrame: The original DataFrame with a new column 'hammer' indicating whether each row represents 
+                      a hammer candlestick pattern (True or False).
+                      
+    Notes:
+        The 'hammer' column is calculated using the following conditions:
+        - The difference between high and close is greater than twice the difference between open and low.
+        - The ratio of close to the range (high - low) is greater than 0.6.
+        - The ratio of open to the range (high - low) is greater than 0.6.
+    """
+    
+    if df is None or df.empty:
+        raise ValueError("df must be provided and cannot be None or empty.")
+    
+    df['hammer'] = ((df['high'] - df['close']) > 2 * (df['open'] - df['low'])) & \
+                   ((df['close'] - df['low']) / (df['high'] - df['low']) > 0.6) & \
+                   ((df['open'] - df['low']) / (df['high'] - df['low']) > 0.6)
+    return df
+
+
+def is_morning_star(df):
+    """
+    Identifies morning star candlestick patterns in a DataFrame containing stock or cryptocurrency data.
+    
+    A morning star is a three-candlestick pattern where:
+    - The first candle is a long bearish candle.
+    - The second candle is a small-bodied candle (either bullish or bearish) that gaps down.
+    - The third candle is a long bullish candle that closes above the midpoint of the first candle.
+    
+    Args:
+        df (pd.DataFrame): A DataFrame containing columns ['open', 'high', 'low', 'close'] representing 
+                            the open, high, low, and close prices of the candlesticks.
+                            
+    Returns:
+        pd.DataFrame: The original DataFrame with a new column 'morning_star' indicating whether each row represents 
+                      a morning star candlestick pattern (True or False).
+                      
+    Notes:
+        The 'morning_star' column is calculated using the following conditions:
+        - The close of the second candlestick is less than the open of the second candlestick (first bearish candle).
+        - The open of the third candlestick is less than the close of the second candlestick.
+        - The close of the third candlestick is greater than the open of the third candlestick.
+    """
+    
+    if df is None or df.empty:
+        raise ValueError("df must be provided and cannot be None or empty.")
+    
+    df['morning_star'] = ((df['close'].shift(2) < df['open'].shift(2)) &
+                          (df['open'].shift(1) < df['close'].shift(1)) &
+                          (df['close'] > df['open']))
+    return df
+
+
+def is_bullish_engulfing(df):
+    """
+    Identifies bullish engulfing candlestick patterns in a DataFrame containing stock or cryptocurrency data.
+
+    A bullish engulfing pattern occurs when a small bearish candlestick is followed by a large bullish candlestick
+    that completely engulfs the previous bearish candle.
+
+    Args:
+        df (pd.DataFrame): A DataFrame containing columns ['open', 'high', 'low', 'close'] representing 
+                            the open, high, low, and close prices of the candlesticks.
+
+    Returns:
+        pd.DataFrame: The original DataFrame with a new column 'bullish_engulfing' indicating whether each row represents 
+                      a bullish engulfing candlestick pattern (True or False).
+
+    Notes:
+        The 'bullish_engulfing' column is calculated using the following conditions:
+        - The previous candlestick is bearish (its open is greater than its close).
+        - The current candlestick is bullish (its open is less than its close).
+        - The current candlestick's open is less than the previous candlestick's close.
+        - The current candlestick's close is greater than the previous candlestick's open.
+    """
+    
+    if df is None or df.empty:
+        raise ValueError("df must be provided and cannot be None or empty.")
+    
+    df['bullish_engulfing'] = (df['open'].shift(1) > df['close'].shift(1)) & \
+                              (df['open'] < df['close']) & \
+                              (df['open'] < df['close'].shift(1)) & \
+                              (df['close'] > df['open'].shift(1))
+    return df
+
+
+def prepare_df(df=None, regresion=False, clasification=False):
+    """
+    Prepares the dataframe by calculating technical indicators such as 
+    moving averages, RSI, MACD, volume trends, etc., and returns the modified dataframe.
+
+    Parameters:
+    - df (pd.DataFrame): The input dataframe containing market data. 
+    - regresion (bool): Flag to indicate if the dataframe is being prepared for regression (not used in the code right now).
+    - clasification (bool): Flag to indicate if the dataframe is being prepared for classification (not used in the code right now).
+
+    Returns:
+    - pd.DataFrame: The modified dataframe with technical indicators added as new columns.
     """
     
     min_df_len = 200
@@ -43,7 +144,7 @@ def prepare_df_for_ml(df=None, regresion=False, clasification=False):
     drop_threshold = -2
     
     if df is None or df.empty or len(df) < min_df_len:
-        return False
+        raise ValueError("df must be provided and cannot be None or empty.")
     
     result = df.copy()
     
@@ -672,15 +773,13 @@ def prepare_df_for_ml(df=None, regresion=False, clasification=False):
   
     for marker_period in markers_periods:
         
-        if regresion:
-            result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = (result['close'].shift(-marker_period) - result['close']) / result['close'] * 100
-        
-        if clasification:     
-            result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
-                ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= success_threshold) & 
-                ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > drop_threshold)
-            )
-        
+        result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100) if regresion else 0
+            
+        result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
+            ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= success_threshold) & 
+            ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > drop_threshold)
+            ) if clasification else 0
+            
 
     result.drop(columns=['open_time', 'close_time'])
     result.fillna(0, inplace=True)
