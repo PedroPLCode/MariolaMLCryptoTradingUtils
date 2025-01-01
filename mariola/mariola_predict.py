@@ -1,22 +1,68 @@
+import argparse
+import json
 from keras.models import load_model
-from api_utils import fetch_data
-from calc_utils import prepare_df
+from utils.api_utils import get_klines
+from utils.calc_utils import prepare_df
+from utils.logger_utils import initialize_logger, log
 from mariola_utils import (
     normalize_df, 
     handle_pca, 
     create_sequences
 )
 
+parser = argparse.ArgumentParser(description="A script that accepts two arguments.")
+parser.add_argument('first_argument', 
+                    type=str, 
+                    help="A required argument. Settings filename.json"
+                    )
+parser.add_argument('second_argument', 
+                    type=str, 
+                    help="A required argument. Model filename.keras"
+                    )
+
+args = parser.parse_args()
+settings_filename = args.first_argument
+model_filename = args.second_argument
+base_filename = model_filename.split('.')[0]
+
+initialize_logger(settings_filename)
+
+try:
+    with open(settings_filename, 'r') as f:
+        settings_data = json.load(f)
+    log(f"Successfully loaded settings from {args.argument}")
+except FileNotFoundError:
+    log(f"Error: File {settings_filename} not found.")
+    exit(1)
+except json.JSONDecodeError:
+    log(f"Error: File {settings_filename} is not a valid JSON.")
+    exit(1)
+except Exception as e:
+    log(f"Unexpected error loading file {settings_filename}: {e}")
+    exit(1)
+
+
+settings=settings_data['settings']
+symbol=settings_data['settings']['symbol']
+interval=settings_data['settings']['interval']
+lookback=settings_data['settings']['lookback']
+regresion=settings_data['settings']['regresion']
+clasification=settings_data['settings']['clasification']
+result_marker=settings_data['settings']['result_marker']
+window_size=settings_data['settings']['window_size']
+lookback=settings_data['settings']['window_lookback']
+test_size=settings_data['settings']['test_size']
+random_state=settings_data['settings']['random_state']
+
+
 # Fetch data
-symbol='BTCUSDC'
-interval='1h'
-lookback='100d'
-data_df = fetch_data(
+data_df = get_klines(
     symbol=symbol, 
     interval=interval, 
     lookback=lookback
     )
-print(data_df)
+log(data_df)
+
 
 # Prepare df
 result_df = prepare_df(
@@ -25,10 +71,12 @@ result_df = prepare_df(
     clasification=False
     )
 
+
 # Normalize data
 df_normalized = normalize_df(
     result_df=result_df
     )
+
 
 # Principal Component Analysis
 df_reduced = handle_pca(
@@ -37,10 +85,8 @@ df_reduced = handle_pca(
     result_marker=None
     )
 
+
 # Create sequences
-window_size = 30
-lookback = 14
-result_marker = 'marker_close_trade_success_in_next_14_periods'
 X, _ = create_sequences(
     df_reduced=df_reduced, 
     lookback=lookback, 
@@ -48,11 +94,16 @@ X, _ = create_sequences(
     result_marker=result_marker
     )
 
+
 # Load the saved model
 loaded_model = load_model('model.keras')
+
+
 # Prediction on new data
 y_pred = loaded_model.predict(X)
+
+
 # Converting the predictions to binary values (0 or 1)
 y_pred = (y_pred > 0.5)
 
-print("Predictions:\n", y_pred[:10])
+log("Predictions:\n", y_pred[:10])

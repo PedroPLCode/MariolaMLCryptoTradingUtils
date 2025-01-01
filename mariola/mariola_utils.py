@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
+from utils.logger_utils import log
 
 def normalize_df(result_df=None):
     """
@@ -17,20 +18,25 @@ def normalize_df(result_df=None):
         This function replaces `np.inf` and `-np.inf` values with 0, and clips numeric values to the range [-1.8e308, 1.8e308].
         Non-numeric columns are excluded from the normalization process.
     """
+    try:
+        
+        if result_df is None or result_df.empty:
+            raise ValueError("result_df must be provided and cannot be None.")
+        
+        non_numeric_features = result_df.select_dtypes(include=['bool', 'datetime', 'string']).columns.tolist()
+        numeric_features = result_df.select_dtypes(include=['float64', 'int64']).columns.tolist()
+        result_df = result_df.replace([np.inf, -np.inf], 0)
+        result_df[numeric_features] = result_df[numeric_features].clip(lower=-1.8e308, upper=1.8e308)
+        
+        scaler = MinMaxScaler()
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        df_normalized = pd.DataFrame(scaler.fit_transform(result_df[numeric_features]), columns=numeric_features)
+        
+        return df_normalized
     
-    if result_df is None or result_df.empty:
-        raise ValueError("result_df must be provided and cannot be None.")
-    
-    non_numeric_features = result_df.select_dtypes(include=['bool', 'datetime', 'string']).columns.tolist()
-    numeric_features = result_df.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    result_df = result_df.replace([np.inf, -np.inf], 0)
-    result_df[numeric_features] = result_df[numeric_features].clip(lower=-1.8e308, upper=1.8e308)
-    
-    scaler = MinMaxScaler()
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    df_normalized = pd.DataFrame(scaler.fit_transform(result_df[numeric_features]), columns=numeric_features)
-    
-    return df_normalized
+    except Exception as e:
+        log(e)
+        return None
 
 
 def handle_pca(df_normalized=None, result_df=None, result_marker=None):
@@ -48,18 +54,23 @@ def handle_pca(df_normalized=None, result_df=None, result_marker=None):
     Notes:
         The PCA transformation reduces the features to the specified number of components (`n_components=50`).
     """
-    
-    if result_df is None or result_df.empty:
-        raise ValueError("df_normalized must be provided and cannot be None.")
-    
-    pca = PCA(n_components=50)
-    df_reduced = pca.fit_transform(df_normalized)
-    df_reduced = pd.DataFrame(df_reduced)
-    
-    if result_df is not None and result_marker:
-        df_reduced[result_marker] = result_df[result_marker]
+    try:
         
-    return df_reduced
+        if result_df is None or result_df.empty:
+            raise ValueError("df_normalized must be provided and cannot be None.")
+        
+        pca = PCA(n_components=50)
+        df_reduced = pca.fit_transform(df_normalized)
+        df_reduced = pd.DataFrame(df_reduced)
+        
+        if result_df is not None and result_marker:
+            df_reduced[result_marker] = result_df[result_marker]
+            
+        return df_reduced
+    
+    except Exception as e:
+        log(e)
+        return None
 
 
 def create_sequences(df_reduced=None, lookback=None, window_size=None, result_marker=None):
@@ -80,20 +91,25 @@ def create_sequences(df_reduced=None, lookback=None, window_size=None, result_ma
     Notes:
         The function extracts sequences of length `window_size` from `df_reduced` and uses the `lookback` value to get the target for each sequence.
     """
-    
-    if df_reduced is None or lookback is None or window_size is None or result_marker is None:
-        raise ValueError("All arguments must be provided and cannot be None.")
-    
-    X, y = [], []
-    
-    for i in range(window_size, len(df_reduced) - lookback):
+    try:
         
-        X.append(df_reduced.iloc[i-window_size:i].values)
+        if df_reduced is None or lookback is None or window_size is None or result_marker is None:
+            raise ValueError("All arguments must be provided and cannot be None.")
         
-        if result_marker in df_reduced.columns:
-            y.append(df_reduced.iloc[i+lookback][result_marker])
+        X, y = [], []
         
-    X = np.array(X)
-    y = np.array(y)
+        for i in range(window_size, len(df_reduced) - lookback):
+            
+            X.append(df_reduced.iloc[i-window_size:i].values)
+            
+            if result_marker in df_reduced.columns:
+                y.append(df_reduced.iloc[i+lookback][result_marker])
+            
+        X = np.array(X)
+        y = np.array(y)
+        
+        return np.array(X), np.array(y)
     
-    return np.array(X), np.array(y)
+    except Exception as e:
+        log(e)
+        return None
