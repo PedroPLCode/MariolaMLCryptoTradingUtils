@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
+import time
 import os
 
 load_dotenv()
@@ -112,6 +113,86 @@ def fetch_data(
         
         return df
     
+    except BinanceAPIException as e:
+        return None
+    except ConnectionError as e:
+        return None
+    except TimeoutError as e:
+        return None
+    except ValueError as e:
+        return None
+    except Exception as e:
+        return None
+    
+    
+def get_full_historical_klines(
+    symbol='BTCUSDC', 
+    interval='1h', 
+    start_str=None, 
+    ):
+    """
+    Fetches complete historical data for a given symbol from the Binance API.
+
+    The function retrieves data in intervals of up to 1000 candles per request
+    and iterates until it collects all the data from the specified start time 
+    (start_str) up to the present time.
+
+    Parameters:
+    symbol (str): The trading pair symbol, e.g., 'BTCUSDC' (default is 'BTCUSDC').
+    interval (str): The time interval for the candles, e.g., '1m', '5m', '1h', '1d' (default is '1h').
+    start_str (str): The start time in the format '1 Jan, 2020' or timestamp in milliseconds.
+    
+    Returns:
+    pd.DataFrame: A DataFrame containing the historical data with the following columns:
+        'open_time', 'open', 'high', 'low', 'close', 'volume', 
+        'close_time', 'quote_asset_volume', 'number_of_trades', 
+        'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'.
+    If an error occurs, the function returns None.
+
+    Exceptions:
+    - BinanceAPIException: Error during communication with the Binance API.
+    - ConnectionError: Connection error.
+    - TimeoutError: Timeout error.
+    - ValueError: Value error.
+    - Other exceptions: General exception.
+
+    Example:
+    >>> df = get_full_klines(symbol='BTCUSDT', interval='1h', start_str='1 Jan, 2020')
+    >>> print(df.head())
+    """
+    
+    try:
+        
+        all_klines = []
+        binance_client = create_binance_client()
+        while True:
+            klines = binance_client.get_historical_klines(
+                symbol=symbol,
+                interval=interval,
+                start_str=start_str,
+                limit=1000
+            )
+            if not klines:
+                break
+            all_klines.extend(klines)
+            start_str = klines[-1][0]
+            time.sleep(0.1)
+        
+        df = pd.DataFrame(
+            all_klines, 
+            columns=[
+                'open_time', 'open', 'high', 'low', 'close', 'volume', 
+                'close_time', 'quote_asset_volume', 'number_of_trades', 
+                'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 
+                'ignore'
+            ]
+        )
+        df['close'] = df['close'].astype(float)
+        df['high'] = df['high'].astype(float)
+        df['low'] = df['low'].astype(float)
+            
+        return df
+        
     except BinanceAPIException as e:
         return None
     except ConnectionError as e:

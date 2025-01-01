@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from keras.layers import LSTM
+from app_utils import load_data_from_csv
 from api_utils import fetch_data
 from calc_utils import prepare_df
 from mariola_utils import (
@@ -10,15 +11,8 @@ from mariola_utils import (
     create_sequences
 )
 
-# Fetch data
-symbol='BTCUSDC'
-interval='1h'
-lookback='1220d'
-data_df = fetch_data(
-    symbol=symbol, 
-    interval=interval, 
-    lookback=lookback
-    )
+# Load data
+data_df = load_data_from_csv()
 
 # Prepare df
 result_df = prepare_df(

@@ -1,3 +1,6 @@
+def load_data_from_csv():
+    pass
+
 def save_pandas_df_info(df, filename):
     """
     Saves basic information and the last 3 rows of a pandas DataFrame to a file.
