@@ -1,0 +1,14 @@
+Pandas DataFrame:
+Index(['open_time', 'open', 'high', 'low', 'close', 'volume', 'close_time',
+       'quote_asset_volume', 'number_of_trades', 'taker_buy_base_asset_volume',
+       'taker_buy_quote_asset_volume', 'ignore'],
+      dtype='object')
+
+Len Columns:
+12
+
+Last 3 rows:
+    open_time    open     high      low    close   volume    close_time  quote_asset_volume  number_of_trades  taker_buy_base_asset_volume  taker_buy_quote_asset_volume  ignore
+1735763400000 94528.0 94668.29 94453.55 94616.01 41.74638 1735765199999        3.948196e+06              1750                     22.49904                  2.127855e+06       0
+1735763400000 94528.0 94668.29 94453.55 94616.01 41.74638 1735765199999        3.948196e+06              1750                     22.49904                  2.127855e+06       0
+1735763400000 94528.0 94668.29 94453.55 94616.01 41.74638 1735765199999        3.948196e+06              1750                     22.49904                  2.127855e+06       0

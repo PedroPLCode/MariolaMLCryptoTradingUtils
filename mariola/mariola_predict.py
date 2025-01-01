@@ -36,7 +36,7 @@ log(f"MariolaCryptoTradingBot. Prediction process starting.\n"
 try:
     with open(settings_filename, 'r') as f:
         settings_data = json.load(f)
-    log(f"Successfully loaded settings from {args.argument}")
+    log(f"Successfully loaded settings from {args.first_argument}")
 except FileNotFoundError:
     log(f"Error: File {settings_filename} not found.")
     exit(1)
@@ -56,7 +56,7 @@ regresion=settings_data['settings']['regresion']
 clasification=settings_data['settings']['clasification']
 result_marker=settings_data['settings']['result_marker']
 window_size=settings_data['settings']['window_size']
-lookback=settings_data['settings']['window_lookback']
+window_lookback=settings_data['settings']['window_lookback']
 test_size=settings_data['settings']['test_size']
 random_state=settings_data['settings']['random_state']
 
@@ -65,9 +65,14 @@ log(f"MariolaCryptoTradingBot. Fetch actual {symbol} {interval} data.")
 data_df = get_klines(
     symbol=symbol, 
     interval=interval, 
-    lookback=lookback
+    lookback=lookback,
     )
-log(f"MariolaCryptoTradingBot. Fetch completed.")
+log(f"MariolaCryptoTradingBot. Fetch completed.\n"
+    f"symbol: {symbol}\n"
+    f"interval: {interval}\n"
+    f"lookback: {lookback}\n"
+    f"len(data_df): {len(data_df)}"
+    )
 
 
 log(f"MariolaCryptoTradingBot. Prepare DataFrame.\n"
@@ -77,8 +82,10 @@ log(f"MariolaCryptoTradingBot. Prepare DataFrame.\n"
       )
 result_df = prepare_df(
     df=data_df, 
-    regresion=False,
-    clasification=False
+    regresion=regresion,
+    clasification=clasification,
+    settings=settings,
+    training=False
     )
 log(f"MariolaCryptoTradingBot. prepare_df completed.")
 
@@ -105,13 +112,15 @@ log(f"MariolaCryptoTradingBot. handle_pca completed.")
 
 
 log(f"MariolaCryptoTradingBot. Create sequences.\n"
-      f"starting normalize_df.\n"
+      f"starting create_sequences.\n"
+      f"len(df_reduced): {len(df_reduced)}\n"
       f"window_size: {window_size}\n"
-      f"lookback: {lookback}"
+      f"lookback: {lookback}\n"
+      f"result_marker: {result_marker}"
       )
 X, _ = create_sequences(
     df_reduced=df_reduced, 
-    lookback=lookback, 
+    lookback=window_lookback, 
     window_size=window_size,
     result_marker=result_marker
     )
@@ -119,7 +128,7 @@ log(f"MariolaCryptoTradingBot. create_sequences completed.")
 
 
 log(f"MariolaCryptoTradingBot. Load the saved model.")
-loaded_model = load_model('model.keras')
+loaded_model = load_model(model_filename)
 log(f"MariolaCryptoTradingBot. Load completed.")
 
 

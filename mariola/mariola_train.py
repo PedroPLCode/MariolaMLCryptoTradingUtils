@@ -8,8 +8,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from keras.layers import LSTM
 from utils.logger_utils import initialize_logger, log
-from utils.app_utils import load_data_from_csv
-from utils.calc_utils import prepare_df
+from utils.app_utils import load_data_from_csv, save_pandas_df_info, save_data_to_csv
 from mariola_utils import (
     normalize_df, 
     handle_pca, 
@@ -23,7 +22,7 @@ parser.add_argument('first_argument',
                     )
 parser.add_argument('second_argument', 
                     type=str, 
-                    help="A required argument. Klines full historical data filename.csv"
+                    help="A required argument. Calculated and prepared data filename.csv"
                     )
 
 args = parser.parse_args()
@@ -40,7 +39,7 @@ log(f"MariolaCryptoTradingBot. Training process starting.\n"
 try:
     with open(settings_filename, 'r') as f:
         settings_data = json.load(f)
-    log(f"Successfully loaded settings from {args.argument}")
+    log(f"Successfully loaded settings from {settings_filename}")
 except FileNotFoundError:
     log(f"Error: File {settings_filename} not found.")
     exit(1)
@@ -66,22 +65,8 @@ log(f"MariolaCryptoTradingBot. Load data from csv file.\n"
       f"starting load_data_from_csv.\n"
       f"filename: {data_filename}"
       )
-data_df = load_data_from_csv(data_filename)
+result_df = load_data_from_csv(data_filename)
 log(f"MariolaCryptoTradingBot. load_data_from_csv completed.")
-
-
-log(f"MariolaCryptoTradingBot. Prepare DataFrame.\n"
-      f"starting prepare_df.\n"
-      f"regresion: {regresion}\n"
-      f"clasification: {clasification}"
-      )
-result_df = prepare_df(
-    df=data_df, 
-    regresion=regresion,
-    clasification=clasification,
-    settings=settings
-    )
-log(f"MariolaCryptoTradingBot. prepare_df completed.")
 
 
 log(f"MariolaCryptoTradingBot. Normalize data."
@@ -90,6 +75,10 @@ log(f"MariolaCryptoTradingBot. Normalize data."
 df_normalized = normalize_df(
     result_df=result_df
     )
+csv_filename = data_filename.replace('_calculated', '_normalized')
+info_filename = csv_filename.replace('csv', 'info')
+save_data_to_csv(df_normalized, csv_filename)
+save_pandas_df_info(df_normalized, info_filename)
 log(f"MariolaCryptoTradingBot. normalize_df completed.")
 
 
@@ -102,6 +91,10 @@ df_reduced = handle_pca(
     result_df=result_df, 
     result_marker=result_marker
     )
+csv_filename = csv_filename.replace('_normalized', '_pca_analyzed')
+info_filename = csv_filename.replace('csv', 'info')
+save_data_to_csv(df_normalized, csv_filename)
+save_pandas_df_info(df_normalized, info_filename)
 log(f"MariolaCryptoTradingBot. handle_pca completed.")
 
 
@@ -116,6 +109,10 @@ X, y = create_sequences(
     window_size=window_size,
     result_marker=result_marker
     )
+csv_filename = csv_filename.replace('_pca_analyzed', '_sequenced')
+info_filename = csv_filename.replace('csv', 'info')
+save_data_to_csv(df_normalized, csv_filename)
+save_pandas_df_info(df_normalized, info_filename)
 log(f"MariolaCryptoTradingBot. create_sequences completed.")
 
 
@@ -158,7 +155,6 @@ log(f"MariolaCryptoTradingBot. completed.")
 
 model.summary()
 
-
-keras_filename = f'{base_filename}.keras'
-model.save(keras_filename)
-log(f"MariolaCryptoTradingBot. Model saved as {keras_filename}")
+model_filename = csv_filename.replace('_sequenced', '_model').replace('csv', 'keras')
+model.save(model_filename)
+log(f"MariolaCryptoTradingBot. Model saved as {model_filename}")

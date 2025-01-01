@@ -1,12 +1,11 @@
 import argparse
 import json
-from datetime import datetime as dt
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.logger_utils import initialize_logger, log
 from utils.api_utils import get_full_historical_klines
-from utils.app_utils import save_data_to_csv
+from utils.app_utils import save_data_to_csv, save_pandas_df_info
 
 parser = argparse.ArgumentParser(description="A script that accepts one argument.")
 parser.add_argument('argument', 
@@ -17,7 +16,7 @@ args = parser.parse_args()
 settings_filename = args.argument
 
 initialize_logger(settings_filename)
-log(f"MariolaCryptoTradingBot. Train starting.\n"
+log(f"MariolaCryptoTradingBot. Fetch starting.\n"
     f"Received filename argument: {settings_filename}"
     )
 
@@ -36,11 +35,6 @@ except Exception as e:
     exit(1)
 
 fetch_sequence = settings_data['fetch_sequence']
-start_str = str(settings_data['settings']['start_str'])
-start_date = dt.strptime(start_str, "%d %b, %Y")
-start_timestamp = str(int(dt.strptime(start_str, "%d %b, %Y").timestamp() * 1000))
-
-print(f"\n\nstart_date: {start_date}\n\n")
 
 total_steps = len(fetch_sequence)
 log(f"Total steps to fetch data: {total_steps}")
@@ -51,8 +45,9 @@ log(f"MariolaCryptoTradingBot. Fetch and save all data according to fetch sequen
 
 for i, (key, value) in enumerate(fetch_sequence.items(), start=1):
     step_name = key
-    symbol = value['symbol']
-    interval = value['interval']
+    symbol = str(value['symbol'])
+    interval = str(value['interval'])
+    start_str = str(value['start_str'])
     
     log(f"MariolaCryptoTradingBot. Fetching data.\n"
         f"Step {i}/{total_steps} - step_name: {step_name}\n"
@@ -66,8 +61,11 @@ for i, (key, value) in enumerate(fetch_sequence.items(), start=1):
         start_str=start_str
         )
 
-    csv_filename = f"{step_name}.csv"
+    csv_filename = f"data/df_{step_name}_fetched.csv"
+    info_filename = csv_filename.replace('csv', 'info')
     save_data_to_csv(historical_klines, csv_filename)
+    save_pandas_df_info(historical_klines, info_filename)
+    log(f"MariolaCryptoTradingBot. historical_klines saved to {csv_filename}.")
     
     log(f"MariolaCryptoTradingBot. Fetch step completed.\n"
         f"Step {i}/{total_steps} - step_name: {step_name}\n"

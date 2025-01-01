@@ -4,6 +4,13 @@ Random Forest
 keras
 PCM LSTM
 
+BTCUSDC, interval 1h, from 1 Jan, 2020
+BTCUSDC, interval 30m, from 1 Jan, 2020
+BTCUSDC, interval 15m, from 1 Jan, 2020
+ETHUSDC, interval 1h, from 1 Jan, 2020
+ETHUSDC, interval 30m, from 1 Jan, 2020
+ETHUSDC, interval 15m, from 1 Jan, 2020
+
 clasification
 bool['marker_close_trade_success_in_next_14_periods']
 bool['marker_close_trade_success_in_next_28_periods']
@@ -11,3 +18,8 @@ bool['marker_close_trade_success_in_next_28_periods']
 regresion
 float64['marker_close_pct_change_in_next_14_periods']
 float64['marker_close_pct_change_in_next_28_periods']
+
+progress tracker:
+6x df fetched - ok
+6x df calculated - ok
+2x model prepared

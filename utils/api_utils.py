@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime as dt, timedelta
+import time
 import pandas as pd
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
@@ -35,7 +36,7 @@ def create_binance_client():
 def get_klines(
     symbol='BTCUSDC', 
     interval='1h', 
-    lookback='1000d', 
+    lookback='2d', 
     start_str=None, 
     end_str=None
     ):
@@ -75,13 +76,13 @@ def get_klines(
         if not start_str and not end_str:
             if lookback[-1] == 'h':
                 hours = int(lookback[:-1])
-                start_time = datetime.utcnow() - timedelta(hours=hours)
+                start_time = dt.utcnow() - timedelta(hours=hours)
             elif lookback[-1] == 'd':
                 days = int(lookback[:-1])
-                start_time = datetime.utcnow() - timedelta(days=days)
+                start_time = dt.utcnow() - timedelta(days=days)
             elif lookback[-1] == 'm':
                 minutes = int(lookback[:-1])
-                start_time = datetime.utcnow() - timedelta(minutes=minutes)
+                start_time = dt.utcnow() - timedelta(minutes=minutes)
             else:
                 raise ValueError("Unsupported lookback period format.")
             
@@ -165,30 +166,58 @@ def get_full_historical_klines(
     """
     
     try:
-        
         all_klines = []
         binance_client = create_binance_client()
-        log(f"Ready to fetch all {symbol} {interval} klines data. start_str: {start_str}")
         
+        if isinstance(start_str, int):
+            start_str = str(start_str)
+        if isinstance(start_str, str):
+            start_date = dt.strptime(start_str, "%d %b, %Y")
+            start_str = str(int(start_date.timestamp() * 1000))
+        
+        timestamp = int(start_str) / 1000
+        start_date = dt.utcfromtimestamp(timestamp)
+        log(f"Ready to fetch all {symbol} {interval} klines data. start_str: {start_date}")
+
         klines_count = binance_client.get_historical_klines(
             symbol=symbol,
             interval=interval,
             start_str=start_str,
             limit=1
         )
-        total_candles = klines_count[0][0] if klines_count else 0
-        total_candles = int(total_candles)
-        log(f"Total candles available: {total_candles}")
+
+        if klines_count:
+            first_kline_timestamp = klines_count[0][0]
+            first_kline_date = dt.utcfromtimestamp(first_kline_timestamp / 1000)
+            log(f"First available kline timestamp: {first_kline_timestamp}, corresponding to {first_kline_date}")
+        else:
+            log("No data available.")
+            return None
+
+        now = dt.now()
+        delta = now - start_date
         
+        total_candles = None
+        if interval == '1h':
+            total_candles = delta.total_seconds() / 3600
+        elif interval == '30m':
+            total_candles = delta.total_seconds() / 1800
+        elif interval == '15m':
+            total_candles = delta.total_seconds() / 900
+        else:
+            log(f"Error. Wrong start date: {start_date} or delta: {delta}")
+            return
+        
+        log(f"Total candles from start date: {total_candles}")
+
         candles_per_iteration = 1000
         total_iterations = (total_candles // candles_per_iteration) + (1 if total_candles % candles_per_iteration else 0)
-        
         log(f"Total iterations required: {total_iterations}")
 
         iteration = 0
-        while True:
+        while iteration < total_iterations:
             iteration += 1
-            log(f"Fetching iteration {iteration}/{total_iterations} - {symbol} {interval} klines data. start_str: {start_str}")
+            log(f"Fetching iteration {iteration}/{total_iterations} - {symbol} {interval} klines data.")
             klines = binance_client.get_historical_klines(
                 symbol=symbol,
                 interval=interval,
@@ -198,12 +227,14 @@ def get_full_historical_klines(
             
             if not klines:
                 break
+            
             all_klines.extend(klines)
+
             start_str = klines[-1][0]
-            log(f"Fetch loop completed. Next start_str: {start_str}")
-            
+            start_str_date = dt.utcfromtimestamp(start_str / 1000)
+            log(f"Fetch loop completed. Next start_str: {start_str_date}")
+
             log(f"Progress: {iteration}/{total_iterations} iterations completed")
-            
             time.sleep(0.1)
         
         df = pd.DataFrame(

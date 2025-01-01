@@ -115,7 +115,7 @@ def is_bullish_engulfing(df):
         return None
 
 
-def prepare_df(df=None, regresion=False, clasification=False, settings=None):
+def prepare_df(df=None, regresion=False, clasification=False, settings=None, training=False):
     """
     Prepares the dataframe by calculating technical indicators such as 
     moving averages, RSI, MACD, volume trends, etc., and returns the modified dataframe.
@@ -134,7 +134,7 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None):
     
     try:
         
-        if df is None or df.empty or len(df) < settings['min_df_len']:
+        if df is None or df.empty:
             raise ValueError("df must be provided and cannot be None or empty.")
         
         result = df.copy()
@@ -637,9 +637,9 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None):
             
         result['upper_band'], result['middle_band'], result['lower_band'] = talib.BBANDS(
                 result['close'],
-                timeperiod=settings['boilinger_timeperiod'][0],
-                nbdevup=settings['boilinger_timeperiod'][1],
-                nbdevdn=settings['boilinger_timeperiod'][1],
+                timeperiod=settings['boilinger_timeperiod'],
+                nbdevup=settings['boilinger_nbdev'],
+                nbdevdn=settings['boilinger_nbdev'],
                 matype=0
             )
         result[f'is_upper_band_rising'] = result[f'upper_band'].diff() > 0
@@ -665,10 +665,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None):
             result['high'],
             result['low'],
             result['close'],
-            fastk_period=settings['stochastic_timeperiods'][0],
-            slowk_period=settings['stochastic_timeperiods'][1],
+            fastk_period=settings['stochastic_k_timeperiods'],
+            slowk_period=settings['stochastic_d_timeperiods'],
             slowk_matype=0,
-            slowd_period=settings['stochastic_timeperiods'][1],
+            slowd_period=settings['stochastic_d_timeperiods'],
             slowd_matype=0
         )
         
@@ -689,9 +689,9 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None):
         
         result['stoch_rsi_k'], result['stoch_rsi_d'] = talib.STOCHRSI(
             result['close'],
-            timeperiod=settings['stochastic_rsi_timeperiods'][0],
-            fastk_period=settings['stochastic_rsi_timeperiods'][1],
-            fastd_period=settings['stochastic_rsi_timeperiods'][1],
+            timeperiod=settings['stochastic_rsi_k_timeperiods'],
+            fastk_period=settings['stochastic_rsi_d_timeperiods'],
+            fastd_period=settings['stochastic_rsi_d_timeperiods'],
             fastd_matype=0
         )
             
@@ -764,12 +764,14 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None):
     
         for marker_period in settings['markers_periods']:
             
-            result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100) if regresion else 0
+            if regresion:
+                result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100) if training else 0
                 
-            result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
-                ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= settings['success_threshold']) & 
-                ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > settings['drop_threshold'])
-                ) if clasification else 0
+            if clasification:
+                result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
+                    ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= settings['success_threshold']) & 
+                    ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > settings['drop_threshold'])
+                    ) if training else 0
                 
 
         result.drop(columns=['open_time', 'close_time'])

@@ -2,27 +2,33 @@
     "fetch_sequence": {
         "btc_1h": {
             "symbol": "BTCUSDC",
-            "interval": "1h"
+            "interval": "1h",
+            "start_str": "1 Jan, 2020"
         },
         "btc_30m": {
             "symbol": "BTCUSDC",
-            "interval": "30m"
+            "interval": "30m",
+            "start_str": "1 Jan, 2020"
         },
         "btc_15m": {
             "symbol": "BTCUSDC",
-            "interval": "15m"
+            "interval": "15m",
+            "start_str": "1 Jan, 2020"
         },
         "eth_1h": {
             "symbol": "ETHUSDC",
-            "interval": "1h"
+            "interval": "1h",
+            "start_str": "1 Jan, 2020"
         },
         "eth_30m": {
             "symbol": "ETHUSDC",
-            "interval": "30m"
+            "interval": "30m",
+            "start_str": "1 Jan, 2020"
         },
         "eth_15m": {
             "symbol": "ETHUSDC",
-            "interval": "15m"
+            "interval": "15m",
+            "start_str": "1 Jan, 2020"
         }
     },
     "settings": {
@@ -30,8 +36,7 @@
         "symbol": "BTCUSDC",
         "interval": "1h",
         "lookback": "2d",
-        "start_str": "1 Jan, 2020",
-        "regresion": true,
+        "regresion": false,
         "clasification": true,
         "result_marker": "marker_close_trade_success_in_next_14_periods",
         "window_size": 30,
@@ -40,16 +45,19 @@
         "random_state": 42,
         "min_df_len": 200,
         "general_timeperiods": [7, 14, 28],
-        "averages_timeperiods": [],
+        "averages_timeperiods": [14],
         "macd_timeperiods": [[12, 9]],
         "ema_fast_timeperiod": 9,
         "ema_slow_timeperiod": 21,
-        "bollinger_timeperiod": [20, 2],
-        "stochastic_timeperiods": [14, 3],
-        "stochastic_rsi_timeperiods": [14, 3],
+        "boilinger_timeperiod": 20,
+        "boilinger_nbdev": 2,
+        "stochastic_k_timeperiods": 14,
+        "stochastic_d_timeperiods": 3,
+        "stochastic_rsi_k_timeperiods": 14,
+        "stochastic_rsi_d_timeperiods": 3,
         "psar_acceleration": 0.02,
         "psar_maximum": 0.2,
-        "markers_periods": [14, 28],
+        "markers_periods": [14],
         "rsi_buy_value": 30,
         "rsi_sell_value": 70,
         "cci_buy_value": -100,
