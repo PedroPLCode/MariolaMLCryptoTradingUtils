@@ -1,5 +1,8 @@
 import argparse
 import json
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from keras.models import load_model
 from utils.api_utils import get_klines
 from utils.calc_utils import prepare_df
@@ -26,6 +29,9 @@ model_filename = args.second_argument
 base_filename = model_filename.split('.')[0]
 
 initialize_logger(settings_filename)
+log(f"MariolaCryptoTradingBot. Prediction process starting.\n"
+      f"Received filename arguments: {args.first_argument} {args.second_argument}"
+      )
 
 try:
     with open(settings_filename, 'r') as f:
@@ -55,55 +61,73 @@ test_size=settings_data['settings']['test_size']
 random_state=settings_data['settings']['random_state']
 
 
-# Fetch data
+log(f"MariolaCryptoTradingBot. Fetch actual {symbol} {interval} data.")
 data_df = get_klines(
     symbol=symbol, 
     interval=interval, 
     lookback=lookback
     )
-log(data_df)
+log(f"MariolaCryptoTradingBot. Fetch completed.")
 
 
-# Prepare df
+log(f"MariolaCryptoTradingBot. Prepare DataFrame.\n"
+      f"starting prepare_df.\n"
+      f"regresion: {regresion}\n"
+      f"clasification: {clasification}"
+      )
 result_df = prepare_df(
     df=data_df, 
     regresion=False,
     clasification=False
     )
+log(f"MariolaCryptoTradingBot. prepare_df completed.")
 
 
-# Normalize data
+log(f"MariolaCryptoTradingBot. Normalize data."
+      f"starting normalize_df."
+      )
 df_normalized = normalize_df(
     result_df=result_df
     )
+log(f"MariolaCryptoTradingBot. normalize_df completed.")
 
 
-# Principal Component Analysis
+log(f"MariolaCryptoTradingBot. Principal Component Analysis.\n"
+      f"starting handle_pca.\n"
+      f"result_marker: {result_marker}"
+      )
 df_reduced = handle_pca(
     df_normalized=df_normalized, 
     result_df=result_df, 
     result_marker=None
     )
+log(f"MariolaCryptoTradingBot. handle_pca completed.")
 
 
-# Create sequences
+log(f"MariolaCryptoTradingBot. Create sequences.\n"
+      f"starting normalize_df.\n"
+      f"window_size: {window_size}\n"
+      f"lookback: {lookback}"
+      )
 X, _ = create_sequences(
     df_reduced=df_reduced, 
     lookback=lookback, 
     window_size=window_size,
     result_marker=result_marker
     )
+log(f"MariolaCryptoTradingBot. create_sequences completed.")
 
 
-# Load the saved model
+log(f"MariolaCryptoTradingBot. Load the saved model.")
 loaded_model = load_model('model.keras')
+log(f"MariolaCryptoTradingBot. Load completed.")
 
 
-# Prediction on new data
+log(f"MariolaCryptoTradingBot. Prediction on new data.")
 y_pred = loaded_model.predict(X)
+log(f"MariolaCryptoTradingBot. Prediction completed.")
 
 
-# Converting the predictions to binary values (0 or 1)
+log(f"MariolaCryptoTradingBot. Converting the predictions to binary values (0 or 1).")
 y_pred = (y_pred > 0.5)
-
 log("Predictions:\n", y_pred[:10])

@@ -30,7 +30,7 @@
         "symbol": "BTCUSDC",
         "interval": "1h",
         "lookback": "2d",
-        "start_str": "28 Dec, 2024",
+        "start_str": "1 Jan, 2020",
         "regresion": true,
         "clasification": true,
         "result_marker": "marker_close_trade_success_in_next_14_periods",

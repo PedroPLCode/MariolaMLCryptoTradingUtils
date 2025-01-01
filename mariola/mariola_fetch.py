@@ -1,5 +1,9 @@
 import argparse
 import json
+from datetime import datetime as dt
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.logger_utils import initialize_logger, log
 from utils.api_utils import get_full_historical_klines
 from utils.app_utils import save_data_to_csv
@@ -32,7 +36,11 @@ except Exception as e:
     exit(1)
 
 fetch_sequence = settings_data['fetch_sequence']
-start_str = settings_data['settings']['start_str']
+start_str = str(settings_data['settings']['start_str'])
+start_date = dt.strptime(start_str, "%d %b, %Y")
+start_timestamp = str(int(dt.strptime(start_str, "%d %b, %Y").timestamp() * 1000))
+
+print(f"\n\nstart_date: {start_date}\n\n")
 
 total_steps = len(fetch_sequence)
 log(f"Total steps to fetch data: {total_steps}")

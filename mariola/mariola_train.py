@@ -1,5 +1,8 @@
 import argparse
 import json
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
@@ -113,7 +116,7 @@ X, y = create_sequences(
     window_size=window_size,
     result_marker=result_marker
     )
-log(f"MariolaCryptoTradingBot. handle_pca completed.")
+log(f"MariolaCryptoTradingBot. create_sequences completed.")
 
 
 log(f"MariolaCryptoTradingBot. Splitting the data into training and testing sets.\n"
