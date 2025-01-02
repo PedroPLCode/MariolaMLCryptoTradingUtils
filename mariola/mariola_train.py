@@ -155,6 +155,6 @@ log(f"MariolaCryptoTradingBot. completed.")
 
 model.summary()
 
-model_filename = csv_filename.replace('_sequenced', '_model').replace('csv', 'keras')
+model_filename = csv_filename.replace('df_', 'model_').replace('_sequenced', '_lstm').replace('csv', 'keras')
 model.save(model_filename)
 log(f"MariolaCryptoTradingBot. Model saved as {model_filename}")

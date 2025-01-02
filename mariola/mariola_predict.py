@@ -85,7 +85,7 @@ result_df = prepare_df(
     regresion=regresion,
     clasification=clasification,
     settings=settings,
-    training=False
+    training_mode=False
     )
 log(f"MariolaCryptoTradingBot. prepare_df completed.")
 

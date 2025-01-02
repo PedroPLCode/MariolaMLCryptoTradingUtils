@@ -66,7 +66,7 @@ result_df = prepare_df(
     regresion=regresion,
     clasification=clasification,
     settings=settings,
-    training=True
+    training_mode=True
     )
 csv_filename = data_filename.replace('_fetched', '_calculated')
 info_filename = csv_filename.replace('csv', 'info')
