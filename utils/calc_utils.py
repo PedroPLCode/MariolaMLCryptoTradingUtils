@@ -115,7 +115,7 @@ def is_bullish_engulfing(df):
         return None
 
 
-def prepare_df(df=None, regresion=False, clasification=False, settings=None, training=False):
+def prepare_df(df=None, regresion=False, clasification=False, settings=None, training_mode=False):
     """
     Prepares the dataframe by calculating technical indicators such as 
     moving averages, RSI, MACD, volume trends, etc., and returns the modified dataframe.
@@ -764,14 +764,16 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
     
         for marker_period in settings['markers_periods']:
             
-            if regresion:
-                result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100) if training else 0
+            if training_mode: 
                 
-            if clasification:
-                result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
-                    ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= settings['success_threshold']) & 
-                    ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > settings['drop_threshold'])
-                    ) if training else 0
+                if regresion:
+                    result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100)
+                    
+                if clasification:
+                    result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
+                        ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= settings['success_threshold']) & 
+                        ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > settings['drop_threshold'])
+                        )
                 
 
         result.drop(columns=['open_time', 'close_time'])

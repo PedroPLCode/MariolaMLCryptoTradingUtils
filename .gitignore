@@ -4,6 +4,12 @@ PRIVATE_API_KEY.py
 # csv files for backtesting
 *.csv
 
+# info files for backtesting
+*.info
+
+# logs
+*.log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

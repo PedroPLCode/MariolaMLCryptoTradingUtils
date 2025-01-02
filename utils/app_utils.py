@@ -90,8 +90,10 @@ def save_pandas_df_info(df, filename):
         with open(filename, 'w') as f:
             f.write("Pandas DataFrame:\n")
             f.write(str(df.columns) + "\n\n")
-            f.write("Len Columns:\n")
+            f.write("Number of Columns:\n")
             f.write(str(len(df.columns)) + "\n\n")
+            f.write("Number of Rows:\n")
+            f.write(str(len(df)) + "\n\n")
             f.write("Last 3 rows:\n")
             f.write(df.tail(3).to_string(index=False))
             log(f"DataFrame saved to {filename}")
