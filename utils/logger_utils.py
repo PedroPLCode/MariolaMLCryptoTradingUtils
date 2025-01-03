@@ -4,6 +4,24 @@ from datetime import datetime
 log_filename = None
 
 def initialize_logger(settings_filename):
+    """
+    Initializes the logger by loading the log file path from a JSON settings file.
+
+    Reads the `settings_filename` JSON file to extract the `log_filename` value, 
+    which determines where log messages will be written. If the file does not exist, 
+    is invalid JSON, or does not contain the required key, the program exits with an error message.
+
+    Parameters:
+        settings_filename (str): The path to the JSON settings file.
+
+    Raises:
+        FileNotFoundError: If the `settings_filename` file does not exist.
+        json.JSONDecodeError: If the file is not valid JSON.
+        KeyError: If the `log_filename` key is missing in the JSON.
+
+    Returns:
+        None
+    """
     global log_filename
     try:
         with open(settings_filename, 'r') as f:
@@ -18,9 +36,25 @@ def initialize_logger(settings_filename):
     except KeyError:
         print("Error: log_filename not found in settings.json.")
         exit(1)
-        
+
 
 def log(message):
+    """
+    Logs a message to the console and appends it to the log file.
+
+    This function writes the provided message to both the console and a log file, 
+    along with the current timestamp. The logger must be initialized with 
+    `initialize_logger()` before calling this function.
+
+    Parameters:
+        message (str): The log message to be recorded.
+
+    Raises:
+        RuntimeError: If the logger has not been initialized by calling `initialize_logger()`.
+
+    Returns:
+        None
+    """
     if log_filename is None:
         raise RuntimeError("Logger has not been initialized. Call initialize_logger() first.")
     

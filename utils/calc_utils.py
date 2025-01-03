@@ -115,7 +115,12 @@ def is_bullish_engulfing(df):
         return None
 
 
-def prepare_df(df=None, regresion=False, clasification=False, settings=None, training_mode=False):
+def prepare_df(df=None, 
+               regresion=False, 
+               clasification=False, 
+               settings=None, 
+               training_mode=False
+               ):
     """
     Prepares the dataframe by calculating technical indicators such as 
     moving averages, RSI, MACD, volume trends, etc., and returns the modified dataframe.
@@ -149,8 +154,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         
         for avg_period in settings['averages_timeperiods']:
             result[f'close_ma_{avg_period}'] = result['close'].rolling(window=avg_period).mean()
-            result[f'is_close_rising_in_avg_period_{avg_period}'] = result['close'] > result[f'close_ma_{avg_period}']
-            result[f'is_close_dropping_in_avg_period_{avg_period}'] = result['close'] < result[f'close_ma_{avg_period}']
+            result[f'is_close_rising_in_avg_period_{avg_period}'] = \
+                result['close'] > result[f'close_ma_{avg_period}']
+            result[f'is_close_dropping_in_avg_period_{avg_period}'] = \
+                result['close'] < result[f'close_ma_{avg_period}']
             result[f'close_change_vs_ma_{avg_period}'] = result['close'] - result[f'close_ma_{avg_period}']
             
             result[f'close_pct_change_vs_ma_{avg_period}'] = np.where(
@@ -159,8 +166,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
                 0
             )
             
-            result[f'max_close_in_{avg_period}'] = result[f'close_ma_{avg_period}'].rolling(window=avg_period).max()
-            result[f'min_close_in_{avg_period}'] = result[f'close_ma_{avg_period}'].rolling(window=avg_period).min()
+            result[f'max_close_in_{avg_period}'] = result[f'close_ma_{avg_period}'] \
+                .rolling(window=avg_period).max()
+            result[f'min_close_in_{avg_period}'] = result[f'close_ma_{avg_period}'] \
+                .rolling(window=avg_period).min()
             
 
         result['high'] = pd.to_numeric(result['high'], errors='coerce')
@@ -171,8 +180,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         
         for avg_period in settings['averages_timeperiods']:
             result[f'high_ma_{avg_period}'] = result['high'].rolling(window=avg_period).mean()
-            result[f'is_high_rising_in_avg_period_{avg_period}'] = result['high'] > result[f'high_ma_{avg_period}']
-            result[f'is_high_dropping_in_avg_period_{avg_period}'] = result['high'] < result[f'high_ma_{avg_period}']
+            result[f'is_high_rising_in_avg_period_{avg_period}'] = \
+                result['high'] > result[f'high_ma_{avg_period}']
+            result[f'is_high_dropping_in_avg_period_{avg_period}'] = \
+                result['high'] < result[f'high_ma_{avg_period}']
             result[f'high_change_vs_ma_{avg_period}'] = result['high'] - result[f'high_ma_{avg_period}']
             
             result[f'high_pct_change_vs_ma_{avg_period}'] = np.where(
@@ -181,8 +192,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
                 0
             )
             
-            result[f'max_high_in_{avg_period}'] = result[f'high_ma_{avg_period}'].rolling(window=avg_period).max()
-            result[f'min_high_in_{avg_period}'] = result[f'high_ma_{avg_period}'].rolling(window=avg_period).min()
+            result[f'max_high_in_{avg_period}'] = result[f'high_ma_{avg_period}'] \
+                .rolling(window=avg_period).max()
+            result[f'min_high_in_{avg_period}'] = result[f'high_ma_{avg_period}'] \
+                .rolling(window=avg_period).min()
             
             
         result['low'] = pd.to_numeric(result['low'], errors='coerce')
@@ -193,8 +206,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         
         for avg_period in settings['averages_timeperiods']:
             result[f'low_ma_{avg_period}'] = result['low'].rolling(window=avg_period).mean()
-            result[f'is_low_rising_in_avg_period_{avg_period}'] = result['low'] > result[f'low_ma_{avg_period}']
-            result[f'is_low_dropping_in_avg_period_{avg_period}'] = result['low'] < result[f'low_ma_{avg_period}']
+            result[f'is_low_rising_in_avg_period_{avg_period}'] = \
+                result['low'] > result[f'low_ma_{avg_period}']
+            result[f'is_low_dropping_in_avg_period_{avg_period}'] = \
+                result['low'] < result[f'low_ma_{avg_period}']
             result[f'low_change_vs_ma_{avg_period}'] = result['low'] - result[f'low_ma_{avg_period}']
             
             result[f'low_pct_change_vs_ma_{avg_period}'] = np.where(
@@ -203,8 +218,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
                 0
             )
             
-            result[f'max_low_in_{avg_period}'] = result[f'low_ma_{avg_period}'].rolling(window=avg_period).max()
-            result[f'min_low_in_{avg_period}'] = result[f'low_ma_{avg_period}'].rolling(window=avg_period).min()
+            result[f'max_low_in_{avg_period}'] = result[f'low_ma_{avg_period}'] \
+                .rolling(window=avg_period).max()
+            result[f'min_low_in_{avg_period}'] = result[f'low_ma_{avg_period}'] \
+                .rolling(window=avg_period).min()
 
             
         result['volume'] = pd.to_numeric(result['volume'], errors='coerce')
@@ -215,8 +232,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         
         for avg_period in settings['averages_timeperiods']:
             result[f'volume_ma_{avg_period}'] = result['volume'].rolling(window=avg_period).mean()
-            result[f'is_volume_rising_in_avg_period_{avg_period}'] = result['volume'] > result[f'volume_ma_{avg_period}']
-            result[f'is_volume_dropping_in_avg_period_{avg_period}'] = result['volume'] < result[f'volume_ma_{avg_period}']
+            result[f'is_volume_rising_in_avg_period_{avg_period}'] = \
+                result['volume'] > result[f'volume_ma_{avg_period}']
+            result[f'is_volume_dropping_in_avg_period_{avg_period}'] = \
+                result['volume'] < result[f'volume_ma_{avg_period}']
             result[f'volume_change_vs_ma_{avg_period}'] = result['volume'] - result[f'volume_ma_{avg_period}']
             
             result[f'volume_pct_change_vs_ma_{avg_period}'] = np.where(
@@ -262,13 +281,19 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         is_morning_star(result)
         is_bullish_engulfing(result)
         
-        result['is_hammer_morning'] = (result['hammer'] & (result['open_time_hour'] >= 9) & (result['open_time_hour'] <= 12))
-        result['is_morning_star_morning'] = (result['morning_star'] & (result['open_time_hour'] >= 9) & (result['open_time_hour'] <= 12))
-        result['is_bullish_engulfing_morning'] = (result['bullish_engulfing'] & (result['open_time_hour'] >= 9) & (result['open_time_hour'] <= 12))
+        result['is_hammer_morning'] = \
+            (result['hammer'] & (result['open_time_hour'] >= 9) & (result['open_time_hour'] <= 12))
+        result['is_morning_star_morning'] = \
+            (result['morning_star'] & (result['open_time_hour'] >= 9) & (result['open_time_hour'] <= 12))
+        result['is_bullish_engulfing_morning'] = \
+            (result['bullish_engulfing'] & (result['open_time_hour'] >= 9) & (result['open_time_hour'] <= 12))
 
-        result['is_hammer_weekend'] = (result['hammer'] & result['open_time_weekday'].isin([5, 6]))
-        result['is_morning_star_weekend'] = (result['morning_star'] & result['open_time_weekday'].isin([5, 6]))
-        result['is_bullish_engulfing_weekend'] = (result['bullish_engulfing'] & result['open_time_weekday'].isin([5, 6]))
+        result['is_hammer_weekend'] = \
+            (result['hammer'] & result['open_time_weekday'].isin([5, 6]))
+        result['is_morning_star_weekend'] = \
+            (result['morning_star'] & result['open_time_weekday'].isin([5, 6]))
+        result['is_bullish_engulfing_weekend'] = \
+            (result['bullish_engulfing'] & result['open_time_weekday'].isin([5, 6]))
 
 
         for period in settings['general_timeperiods']:
@@ -295,19 +320,26 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             )
 
             for avg_period in settings['averages_timeperiods']:
-                result[f'rsi_{period}_ma_{avg_period}'] = result[f'rsi_{period}'].rolling(window=avg_period).mean()
-                result[f'is_rsi_{period}_rising_in_avg_period_{avg_period}'] = result[f'rsi_{period}'] > result[f'rsi_{period}_ma_{avg_period}']
-                result[f'is_rsi_{period}_dropping_in_avg_period_{avg_period}'] = result[f'rsi_{period}'] < result[f'rsi_{period}_ma_{avg_period}']
-                result[f'rsi_{period}_change_vs_ma_{avg_period}'] = result[f'rsi_{period}'] - result[f'rsi_{period}_ma_{avg_period}']
+                result[f'rsi_{period}_ma_{avg_period}'] = result[f'rsi_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_rsi_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'rsi_{period}'] > result[f'rsi_{period}_ma_{avg_period}']
+                result[f'is_rsi_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'rsi_{period}'] < result[f'rsi_{period}_ma_{avg_period}']
+                result[f'rsi_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'rsi_{period}'] - result[f'rsi_{period}_ma_{avg_period}']
                 
                 result[f'rsi_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'rsi_{period}_ma_{avg_period}'] != 0,
-                    (result[f'rsi_{period}'] - result[f'rsi_{period}_ma_{avg_period}']) / result[f'rsi_{period}_ma_{avg_period}'] * 100,
+                    (result[f'rsi_{period}'] - result[f'rsi_{period}_ma_{avg_period}']) / \
+                        result[f'rsi_{period}_ma_{avg_period}'] * 100,
                     0
                 )
                 
-                result[f'rsi_{period}_ma_{avg_period}_buy_signal'] = result[f'rsi_{period}_ma_{avg_period}'] < settings['rsi_buy_value']
-                result[f'rsi_{period}_ma_{avg_period}_sell_signal'] = result[f'rsi_{period}_ma_{avg_period}'] > settings['rsi_sell_value']
+                result[f'rsi_{period}_ma_{avg_period}_buy_signal'] = \
+                    result[f'rsi_{period}_ma_{avg_period}'] < settings['rsi_buy_value']
+                result[f'rsi_{period}_ma_{avg_period}_sell_signal'] = \
+                    result[f'rsi_{period}_ma_{avg_period}'] > settings['rsi_sell_value']
                 
                 result[f'rsi_{period}_ma_{avg_period}_bullish_divergence_signal'] = (
                     (result[f'is_rsi_{period}_rising_in_avg_period_{avg_period}'] == True) & 
@@ -343,19 +375,26 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             )
 
             for avg_period in settings['averages_timeperiods']:
-                result[f'cci_{period}_ma_{avg_period}'] = result[f'cci_{period}'].rolling(window=avg_period).mean()
-                result[f'is_cci_{period}_rising_in_avg_period_{avg_period}'] = result[f'cci_{period}'] > result[f'cci_{period}_ma_{avg_period}']
-                result[f'is_cci_{period}_dropping_in_avg_period_{avg_period}'] = result[f'cci_{period}'] < result[f'cci_{period}_ma_{avg_period}']
-                result[f'cci_{period}_change_vs_ma_{avg_period}'] = result[f'cci_{period}'] - result[f'cci_{period}_ma_{avg_period}']
+                result[f'cci_{period}_ma_{avg_period}'] = result[f'cci_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_cci_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'cci_{period}'] > result[f'cci_{period}_ma_{avg_period}']
+                result[f'is_cci_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'cci_{period}'] < result[f'cci_{period}_ma_{avg_period}']
+                result[f'cci_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'cci_{period}'] - result[f'cci_{period}_ma_{avg_period}']
                 
                 result[f'cci_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'cci_{period}_ma_{avg_period}'] != 0,
-                    (result[f'cci_{period}'] - result[f'cci_{period}_ma_{avg_period}']) / result[f'cci_{period}_ma_{avg_period}'] * 100,
+                    (result[f'cci_{period}'] - result[f'cci_{period}_ma_{avg_period}']) / \
+                        result[f'cci_{period}_ma_{avg_period}'] * 100,
                     0
                 )
                 
-                result[f'cci_{period}_ma_{avg_period}_buy_signal'] = result[f'cci_{period}_ma_{avg_period}'] < settings['cci_buy_value']
-                result[f'cci_{period}_ma_{avg_period}_sell_signal'] = result[f'cci_{period}_ma_{avg_period}'] > settings['cci_sell_value']
+                result[f'cci_{period}_ma_{avg_period}_buy_signal'] = \
+                    result[f'cci_{period}_ma_{avg_period}'] < settings['cci_buy_value']
+                result[f'cci_{period}_ma_{avg_period}_sell_signal'] = \
+                    result[f'cci_{period}_ma_{avg_period}'] > settings['cci_sell_value']
                 
                 result[f'cci_{period}_ma_{avg_period}_bullish_divergence_signal'] = (
                     (result[f'is_cci_{period}_rising_in_avg_period_{avg_period}'] == True) & 
@@ -392,19 +431,26 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             )
 
             for avg_period in settings['averages_timeperiods']:
-                result[f'mfi_{period}_ma_{avg_period}'] = result[f'mfi_{period}'].rolling(window=avg_period).mean()
-                result[f'is_mfi_{period}_rising_in_avg_period_{avg_period}'] = result[f'mfi_{period}'] > result[f'mfi_{period}_ma_{avg_period}']
-                result[f'is_mfi_{period}_dropping_in_avg_period_{avg_period}'] = result[f'mfi_{period}'] < result[f'mfi_{period}_ma_{avg_period}']
-                result[f'mfi_{period}_change_vs_ma_{avg_period}'] = result[f'mfi_{period}'] - result[f'mfi_{period}_ma_{avg_period}']
+                result[f'mfi_{period}_ma_{avg_period}'] = result[f'mfi_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_mfi_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'mfi_{period}'] > result[f'mfi_{period}_ma_{avg_period}']
+                result[f'is_mfi_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'mfi_{period}'] < result[f'mfi_{period}_ma_{avg_period}']
+                result[f'mfi_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'mfi_{period}'] - result[f'mfi_{period}_ma_{avg_period}']
                 
                 result[f'mfi_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'mfi_{period}_ma_{avg_period}'] != 0,
-                    (result[f'mfi_{period}'] - result[f'mfi_{period}_ma_{avg_period}']) / result[f'mfi_{period}_ma_{avg_period}'] * 100,
+                    (result[f'mfi_{period}'] - result[f'mfi_{period}_ma_{avg_period}']) / \
+                        result[f'mfi_{period}_ma_{avg_period}'] * 100,
                     0
                 )
                 
-                result[f'mfi_{period}_ma_{avg_period}_buy_signal'] = result[f'mfi_{period}_ma_{avg_period}'] < settings['mfi_buy_value']
-                result[f'mfi_{period}_ma_{avg_period}_sell_signal'] = result[f'mfi_{period}_ma_{avg_period}'] > settings['mfi_sell_value']
+                result[f'mfi_{period}_ma_{avg_period}_buy_signal'] = \
+                    result[f'mfi_{period}_ma_{avg_period}'] < settings['mfi_buy_value']
+                result[f'mfi_{period}_ma_{avg_period}_sell_signal'] = \
+                    result[f'mfi_{period}_ma_{avg_period}'] > settings['mfi_sell_value']
                 
                 result[f'mfi_{period}_ma_{avg_period}_bullish_divergence_signal'] = (
                     (result[f'is_mfi_{period}_rising_in_avg_period_{avg_period}'] == True) & 
@@ -427,14 +473,19 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             result[f'atr_{period}_change'] = result[f'atr_{period}'].diff()
             result[f'atr_{period}_pct_change'] = result[f'atr_{period}'].pct_change() * 100
             for avg_period in settings['averages_timeperiods']:
-                result[f'atr_{period}_ma_{avg_period}'] = result[f'atr_{period}'].rolling(window=avg_period).mean()
-                result[f'is_atr_{period}_rising_in_avg_period_{avg_period}'] = result[f'atr_{period}'] > result[f'atr_{period}_ma_{avg_period}']
-                result[f'is_atr_{period}_dropping_in_avg_period_{avg_period}'] = result[f'atr_{period}'] < result[f'atr_{period}_ma_{avg_period}']
-                result[f'atr_{period}_change_vs_ma_{avg_period}'] = result[f'atr_{period}'] - result[f'atr_{period}_ma_{avg_period}']
+                result[f'atr_{period}_ma_{avg_period}'] = result[f'atr_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_atr_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'atr_{period}'] > result[f'atr_{period}_ma_{avg_period}']
+                result[f'is_atr_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'atr_{period}'] < result[f'atr_{period}_ma_{avg_period}']
+                result[f'atr_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'atr_{period}'] - result[f'atr_{period}_ma_{avg_period}']
                 
                 result[f'atr_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'atr_{period}_ma_{avg_period}'] != 0,
-                    (result[f'atr_{period}'] - result[f'atr_{period}_ma_{avg_period}']) / result[f'atr_{period}_ma_{avg_period}'] * 100,
+                    (result[f'atr_{period}'] - result[f'atr_{period}_ma_{avg_period}']) / \
+                        result[f'atr_{period}_ma_{avg_period}'] * 100,
                     0
                 )
 
@@ -445,29 +496,41 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
                 result['close'],
                 timeperiod=period
                 )
-            result[f'adx_{period}_strong_trend'] = result[f'adx_{period}'] > settings['adx_strong_trend']
-            result[f'adx_{period}_weak_trend'] = (result[f'adx_{period}'] > settings['adx_weak_trend']) & (result[f'adx_{period}'] < settings['adx_strong_trend'])
-            result[f'adx_{period}_no_trend'] = result[f'adx_{period}'] < settings['adx_no_trend']
+            result[f'adx_{period}_strong_trend'] = result[f'adx_{period}'] > \
+                settings['adx_strong_trend']
+            result[f'adx_{period}_weak_trend'] = (result[f'adx_{period}'] > \
+                settings['adx_weak_trend']) & (result[f'adx_{period}'] < settings['adx_strong_trend'])
+            result[f'adx_{period}_no_trend'] = result[f'adx_{period}'] < \
+                settings['adx_no_trend']
             result[f'is_adx_{period}_rising'] = result[f'adx_{period}'].diff() > 0
             result[f'is_adx_{period}_dropping'] = result[f'adx_{period}'].diff() < 0
             result[f'adx_{period}_change'] = result[f'adx_{period}'].diff()
             result[f'adx_{period}_pct_change'] = result[f'adx_{period}'].pct_change() * 100
             
             for avg_period in settings['averages_timeperiods']:
-                result[f'adx_{period}_ma_{avg_period}'] = result[f'adx_{period}'].rolling(window=avg_period).mean()
-                result[f'is_adx_{period}_rising_in_avg_period_{avg_period}'] = result[f'adx_{period}'] > result[f'adx_{period}_ma_{avg_period}']
-                result[f'is_adx_{period}_dropping_in_avg_period_{avg_period}'] = result[f'adx_{period}'] < result[f'adx_{period}_ma_{avg_period}']
-                result[f'adx_{period}_change_vs_ma_{avg_period}'] = result[f'adx_{period}'] - result[f'adx_{period}_ma_{avg_period}']
+                result[f'adx_{period}_ma_{avg_period}'] = result[f'adx_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_adx_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'adx_{period}'] > result[f'adx_{period}_ma_{avg_period}']
+                result[f'is_adx_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'adx_{period}'] < result[f'adx_{period}_ma_{avg_period}']
+                result[f'adx_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'adx_{period}'] - result[f'adx_{period}_ma_{avg_period}']
                 
                 result[f'adx_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'adx_{period}_ma_{avg_period}'] != 0,
-                    (result[f'adx_{period}'] - result[f'adx_{period}_ma_{avg_period}']) / result[f'adx_{period}_ma_{avg_period}'] * 100,
+                    (result[f'adx_{period}'] - result[f'adx_{period}_ma_{avg_period}']) / \
+                        result[f'adx_{period}_ma_{avg_period}'] * 100,
                     0
                 )
                 
-                result[f'adx_{period}_ma_{avg_period}_strong_trend'] = result[f'adx_{period}_ma_{avg_period}'] > settings['adx_strong_trend']
-                result[f'adx_{period}_ma_{avg_period}_weak_trend'] = (result[f'adx_{period}_ma_{avg_period}'] > settings['adx_weak_trend']) & (result[f'adx_{period}_ma_{avg_period}'] < settings['adx_strong_trend'])
-                result[f'adx_{period}_ma_{avg_period}_no_trend'] = result[f'adx_{period}_ma_{avg_period}'] < settings['adx_no_trend']
+                result[f'adx_{period}_ma_{avg_period}_strong_trend'] = \
+                    result[f'adx_{period}_ma_{avg_period}'] > settings['adx_strong_trend']
+                result[f'adx_{period}_ma_{avg_period}_weak_trend'] = \
+                    (result[f'adx_{period}_ma_{avg_period}'] > settings['adx_weak_trend']) & \
+                        (result[f'adx_{period}_ma_{avg_period}'] < settings['adx_strong_trend'])
+                result[f'adx_{period}_ma_{avg_period}_no_trend'] = \
+                    result[f'adx_{period}_ma_{avg_period}'] < settings['adx_no_trend']
                 
                 
             result[f'plus_di_{period}'] = talib.PLUS_DI(
@@ -482,14 +545,19 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             result[f'plus_di_{period}_pct_change'] = result[f'plus_di_{period}'].pct_change() * 100
             
             for avg_period in settings['averages_timeperiods']:
-                result[f'plus_di_{period}_ma_{avg_period}'] = result[f'plus_di_{period}'].rolling(window=avg_period).mean()
-                result[f'is_plus_di_{period}_rising_in_avg_period_{avg_period}'] = result[f'plus_di_{period}'] > result[f'plus_di_{period}_ma_{avg_period}']
-                result[f'is_plus_di_{period}_dropping_in_avg_period_{avg_period}'] = result[f'plus_di_{period}'] < result[f'plus_di_{period}_ma_{avg_period}']
-                result[f'plus_di_{period}_change_vs_ma_{avg_period}'] = result[f'plus_di_{period}'] - result[f'plus_di_{period}_ma_{avg_period}']
+                result[f'plus_di_{period}_ma_{avg_period}'] = result[f'plus_di_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_plus_di_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'plus_di_{period}'] > result[f'plus_di_{period}_ma_{avg_period}']
+                result[f'is_plus_di_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'plus_di_{period}'] < result[f'plus_di_{period}_ma_{avg_period}']
+                result[f'plus_di_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'plus_di_{period}'] - result[f'plus_di_{period}_ma_{avg_period}']
                 
                 result[f'plus_di_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'plus_di_{period}_ma_{avg_period}'] != 0,
-                    (result[f'plus_di_{period}'] - result[f'plus_di_{period}_ma_{avg_period}']) / result[f'plus_di_{period}_ma_{avg_period}'] * 100,
+                    (result[f'plus_di_{period}'] - result[f'plus_di_{period}_ma_{avg_period}']) / \
+                        result[f'plus_di_{period}_ma_{avg_period}'] * 100,
                     0
                 )
 
@@ -506,42 +574,62 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             result[f'minus_di_{period}_pct_change'] = result[f'minus_di_{period}'].pct_change() * 100
             
             for avg_period in settings['averages_timeperiods']:
-                result[f'minus_di_{period}_ma_{avg_period}'] = result[f'minus_di_{period}'].rolling(window=avg_period).mean()
-                result[f'is_minus_di_{period}_rising_in_avg_period_{avg_period}'] = result[f'minus_di_{period}'] > result[f'minus_di_{period}_ma_{avg_period}']
-                result[f'is_minus_di_{period}_dropping_in_avg_period_{avg_period}'] = result[f'minus_di_{period}'] < result[f'minus_di_{period}_ma_{avg_period}']
-                result[f'minus_di_{period}_change_vs_ma_{avg_period}'] = result[f'minus_di_{period}'] - result[f'minus_di_{period}_ma_{avg_period}']
+                result[f'minus_di_{period}_ma_{avg_period}'] = result[f'minus_di_{period}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_minus_di_{period}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'minus_di_{period}'] > result[f'minus_di_{period}_ma_{avg_period}']
+                result[f'is_minus_di_{period}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'minus_di_{period}'] < result[f'minus_di_{period}_ma_{avg_period}']
+                result[f'minus_di_{period}_change_vs_ma_{avg_period}'] = \
+                    result[f'minus_di_{period}'] - result[f'minus_di_{period}_ma_{avg_period}']
                 
                 result[f'minus_di_{period}_pct_change_vs_ma_{avg_period}'] = np.where(
                     result[f'minus_di_{period}_ma_{avg_period}'] != 0,
-                    (result[f'minus_di_{period}'] - result[f'minus_di_{period}_ma_{avg_period}']) / result[f'minus_di_{period}_ma_{avg_period}'] * 100,
+                    (result[f'minus_di_{period}'] - result[f'minus_di_{period}_ma_{avg_period}']) / \
+                        result[f'minus_di_{period}_ma_{avg_period}'] * 100,
                     0
                 )
 
 
-            result[f'bullish_trend_{period}_signal'] = (result[f'adx_{period}'] > settings['adx_strong_trend']) & \
-                                                    (result[f'plus_di_{period}'] > result[f'minus_di_{period}'])
-            result[f'bearish_trend_{period}_signal'] = (result[f'adx_{period}'] > settings['adx_strong_trend']) & \
-                                            (result[f'plus_di_{period}'] < result[f'minus_di_{period}'])
+            result[f'bullish_trend_{period}_signal'] = \
+                (result[f'adx_{period}'] > settings['adx_strong_trend']) & \
+                    (result[f'plus_di_{period}'] > result[f'minus_di_{period}'])
+            result[f'bearish_trend_{period}_signal'] = \
+                (result[f'adx_{period}'] > settings['adx_strong_trend']) & \
+                    (result[f'plus_di_{period}'] < result[f'minus_di_{period}'])
 
 
         result[f'ema_{settings['ema_fast_timeperiod']}'] = talib.EMA(
             result['close'], 
             timeperiod=settings['ema_fast_timeperiod']
             )
-        result[f'ema_{settings['ema_fast_timeperiod']}_rising'] = result[f'ema_{settings['ema_fast_timeperiod']}'].diff() > 0
-        result[f'is_ema_{settings['ema_fast_timeperiod']}_dropping'] = result[f'ema_{settings['ema_fast_timeperiod']}'].diff() < 0
-        result[f'is_ema_{settings['ema_fast_timeperiod']}_change'] = result[f'ema_{settings['ema_fast_timeperiod']}'].diff()
-        result[f'ema_{settings['ema_fast_timeperiod']}_pct_change'] = result[f'ema_{settings['ema_fast_timeperiod']}'].pct_change() * 100
+        result[f'ema_{settings['ema_fast_timeperiod']}_rising'] = \
+            result[f'ema_{settings['ema_fast_timeperiod']}'].diff() > 0
+        result[f'is_ema_{settings['ema_fast_timeperiod']}_dropping'] = \
+            result[f'ema_{settings['ema_fast_timeperiod']}'].diff() < 0
+        result[f'is_ema_{settings['ema_fast_timeperiod']}_change'] = \
+            result[f'ema_{settings['ema_fast_timeperiod']}'].diff()
+        result[f'ema_{settings['ema_fast_timeperiod']}_pct_change'] = \
+            result[f'ema_{settings['ema_fast_timeperiod']}'].pct_change() * 100
         
         for avg_period in settings['averages_timeperiods']:
-            result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] = result[f'ema_{settings['ema_fast_timeperiod']}'].rolling(window=avg_period).mean()
-            result[f'is_ema_{settings['ema_fast_timeperiod']}_rising_in_avg_period_{avg_period}'] = result[f'ema_{settings['ema_fast_timeperiod']}'] > result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']
-            result[f'is_ema_{settings['ema_fast_timeperiod']}_dropping_in_avg_period_{avg_period}'] = result[f'ema_{settings['ema_fast_timeperiod']}'] < result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']
-            result[f'ema_{settings['ema_fast_timeperiod']}_change_vs_ma_{avg_period}'] = result[f'ema_{settings['ema_fast_timeperiod']}'] - result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']
+            result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] = \
+                result[f'ema_{settings['ema_fast_timeperiod']}'].rolling(window=avg_period).mean()
+            result[f'is_ema_{settings['ema_fast_timeperiod']}_rising_in_avg_period_{avg_period}'] = \
+                result[f'ema_{settings['ema_fast_timeperiod']}'] > \
+                    result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']
+            result[f'is_ema_{settings['ema_fast_timeperiod']}_dropping_in_avg_period_{avg_period}'] = \
+                result[f'ema_{settings['ema_fast_timeperiod']}'] < \
+                    result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']
+            result[f'ema_{settings['ema_fast_timeperiod']}_change_vs_ma_{avg_period}'] = \
+                result[f'ema_{settings['ema_fast_timeperiod']}'] - \
+                    result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']
 
             result[f'ema_{settings['ema_fast_timeperiod']}_pct_change_vs_ma_{avg_period}'] = np.where(  
                 result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] != 0,
-                (result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] - result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']) / result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] * 100,
+                (result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] - \
+                    result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}']) / \
+                        result[f'ema_{settings['ema_fast_timeperiod']}_ma_{avg_period}'] * 100,
                 0
             )
 
@@ -549,34 +637,54 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             result['close'], 
             timeperiod=settings['ema_slow_timeperiod']
             )
-        result[f'is_ema_{settings['ema_slow_timeperiod']}_rising'] = result[f'ema_{settings['ema_slow_timeperiod']}'].diff() > 0
-        result[f'is_ema_{settings['ema_slow_timeperiod']}_dropping'] = result[f'ema_{settings['ema_slow_timeperiod']}'].diff() < 0
-        result[f'ema_{settings['ema_slow_timeperiod']}_change'] = result[f'ema_{settings['ema_slow_timeperiod']}'].diff()
-        result[f'ema_{settings['ema_slow_timeperiod']}_pct_change'] = result[f'ema_{settings['ema_slow_timeperiod']}'].pct_change() * 100
+        result[f'is_ema_{settings['ema_slow_timeperiod']}_rising'] = \
+            result[f'ema_{settings['ema_slow_timeperiod']}'].diff() > 0
+        result[f'is_ema_{settings['ema_slow_timeperiod']}_dropping'] = \
+            result[f'ema_{settings['ema_slow_timeperiod']}'].diff() < 0
+        result[f'ema_{settings['ema_slow_timeperiod']}_change'] = \
+            result[f'ema_{settings['ema_slow_timeperiod']}'].diff()
+        result[f'ema_{settings['ema_slow_timeperiod']}_pct_change'] = \
+            result[f'ema_{settings['ema_slow_timeperiod']}'].pct_change() * 100
         
         for avg_period in settings['averages_timeperiods']:
-            result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}'] = result[f'ema_{settings['ema_slow_timeperiod']}'].rolling(window=avg_period).mean()
-            result[f'is_ema_{settings['ema_slow_timeperiod']}_rising_in_avg_period_{avg_period}'] = result[f'ema_{settings['ema_slow_timeperiod']}'] > result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']
-            result[f'is_ema_{settings['ema_slow_timeperiod']}_dropping_in_avg_period_{avg_period}'] = result[f'ema_{settings['ema_slow_timeperiod']}'] < result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']
-            result[f'ema_{settings['ema_slow_timeperiod']}_change_vs_ma_{avg_period}'] = result[f'ema_{settings['ema_slow_timeperiod']}'] - result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']
+            result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}'] = \
+                result[f'ema_{settings['ema_slow_timeperiod']}'].rolling(window=avg_period).mean()
+            result[f'is_ema_{settings['ema_slow_timeperiod']}_rising_in_avg_period_{avg_period}'] = \
+                result[f'ema_{settings['ema_slow_timeperiod']}'] > \
+                    result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']
+            result[f'is_ema_{settings['ema_slow_timeperiod']}_dropping_in_avg_period_{avg_period}'] = \
+                result[f'ema_{settings['ema_slow_timeperiod']}'] < \
+                    result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']
+            result[f'ema_{settings['ema_slow_timeperiod']}_change_vs_ma_{avg_period}'] = \
+                result[f'ema_{settings['ema_slow_timeperiod']}'] - \
+                    result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']
             
             result[f'ema_{settings['ema_slow_timeperiod']}_pct_change_vs_ma_{avg_period}'] = np.where(  
                 result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}'] != 0,
-                (result[f'ema_{settings['ema_slow_timeperiod']}'] - result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']) / result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}'] * 100,
+                (result[f'ema_{settings['ema_slow_timeperiod']}'] - \
+                    result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}']) / \
+                        result[f'ema_{settings['ema_slow_timeperiod']}_ma_{avg_period}'] * 100,
                 0
             )
 
-        result[f'ema_{settings['ema_fast_timeperiod']}_prev'] = result[f'ema_{settings['ema_fast_timeperiod']}'].shift(1)
-        result[f'ema_{settings['ema_slow_timeperiod']}_prev'] = result[f'ema_{settings['ema_slow_timeperiod']}'].shift(1)
-        result[f'ema_{settings['ema_fast_timeperiod']}_{settings['ema_slow_timeperiod']}_cross_up_signal'] = (result[f'ema_{settings['ema_fast_timeperiod']}_prev'] < result[f'ema_{settings['ema_slow_timeperiod']}_prev']) & (result[f'ema_{settings['ema_fast_timeperiod']}'] > result[f'ema_{settings['ema_slow_timeperiod']}'])
-        result[f'ema_{settings['ema_fast_timeperiod']}_{settings['ema_slow_timeperiod']}_cross_down_signal'] = (result[f'ema_{settings['ema_fast_timeperiod']}_prev'] > result[f'ema_{settings['ema_slow_timeperiod']}_prev']) & (result[f'ema_{settings['ema_fast_timeperiod']}'] < result[f'ema_{settings['ema_slow_timeperiod']}'])
+        result[f'ema_{settings['ema_fast_timeperiod']}_prev'] = \
+            result[f'ema_{settings['ema_fast_timeperiod']}'].shift(1)
+        result[f'ema_{settings['ema_slow_timeperiod']}_prev'] = \
+            result[f'ema_{settings['ema_slow_timeperiod']}'].shift(1)
+        result[f'ema_{settings['ema_fast_timeperiod']}_{settings['ema_slow_timeperiod']}_cross_up_signal'] = \
+            (result[f'ema_{settings['ema_fast_timeperiod']}_prev'] < result[f'ema_{settings['ema_slow_timeperiod']}_prev']) & \
+                (result[f'ema_{settings['ema_fast_timeperiod']}'] > result[f'ema_{settings['ema_slow_timeperiod']}'])
+        result[f'ema_{settings['ema_fast_timeperiod']}_{settings['ema_slow_timeperiod']}_cross_down_signal'] = \
+            (result[f'ema_{settings['ema_fast_timeperiod']}_prev'] > result[f'ema_{settings['ema_slow_timeperiod']}_prev']) & \
+                (result[f'ema_{settings['ema_fast_timeperiod']}'] < result[f'ema_{settings['ema_slow_timeperiod']}'])
             
             
         for period in settings['macd_timeperiods']:
             macd, macd_signal, _ = talib.MACD(result['close'], fastperiod=12, slowperiod=26, signalperiod=9)
             result[f'macd_{period[0]}'] = macd
             result[f'macd_signal_{period[1]}'] = macd_signal
-            result[f'macd_histogram_{period[0]}'] = result[f'macd_{period[0]}'] - result[f'macd_signal_{period[1]}']
+            result[f'macd_histogram_{period[0]}'] = \
+                result[f'macd_{period[0]}'] - result[f'macd_signal_{period[1]}']
             
             result[f'is_macd_{period[0]}_rising'] = result[f'macd_{period[0]}'].diff() > 0
             result[f'is_macd_{period[0]}_dropping'] = result[f'macd_{period[0]}'].diff() < 0
@@ -591,48 +699,73 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             result[f'is_macd_histogram_{period[0]}_rising'] = result[f'macd_histogram_{period[0]}'].diff() > 0
             result[f'is_macd_histogram_{period[0]}_dropping'] = result[f'macd_histogram_{period[0]}'].diff() < 0
             result[f'macd_histogram_{period[0]}_change'] = result[f'macd_histogram_{period[0]}'].diff()
-            result[f'macd_histogram_{period[0]}_pct_change'] = result[f'macd_histogram_{period[0]}'].pct_change() * 100
+            result[f'macd_histogram_{period[0]}_pct_change'] = \
+                result[f'macd_histogram_{period[0]}'].pct_change() * 100
             
             for avg_period in settings['averages_timeperiods']:
-                result[f'macd_{period[0]}_ma_{avg_period}'] = result[f'macd_{period[0]}'].rolling(window=avg_period).mean()
-                result[f'is_macd_{period[0]}_rising_in_avg_period_{avg_period}'] = result[f'macd_{period[0]}'] > result[f'macd_{period[0]}_ma_{avg_period}']
-                result[f'is_macd_{period[0]}_dropping_in_avg_period_{avg_period}'] = result[f'macd_{period[0]}'] < result[f'macd_{period[0]}_ma_{avg_period}']
-                result[f'macd_{period[0]}_change_vs_ma_{avg_period}'] = result[f'macd_{period[0]}'] - result[f'macd_{period[0]}_ma_{avg_period}']
+                result[f'macd_{period[0]}_ma_{avg_period}'] = result[f'macd_{period[0]}'] \
+                    .rolling(window=avg_period).mean()
+                result[f'is_macd_{period[0]}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'macd_{period[0]}'] > result[f'macd_{period[0]}_ma_{avg_period}']
+                result[f'is_macd_{period[0]}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'macd_{period[0]}'] < result[f'macd_{period[0]}_ma_{avg_period}']
+                result[f'macd_{period[0]}_change_vs_ma_{avg_period}'] = \
+                    result[f'macd_{period[0]}'] - result[f'macd_{period[0]}_ma_{avg_period}']
 
                 result[f'macd_{period[0]}_pct_change_vs_ma_{avg_period}'] = np.where(  
                     result[f'macd_{period[0]}_ma_{avg_period}'] != 0,
-                    (result[f'macd_{period[0]}'] - result[f'macd_{period[0]}_ma_{avg_period}']) / result[f'macd_{period[0]}_ma_{avg_period}'] * 100,
+                    (result[f'macd_{period[0]}'] - result[f'macd_{period[0]}_ma_{avg_period}']) / \
+                        result[f'macd_{period[0]}_ma_{avg_period}'] * 100,
                     0
                 )
                 
-                result[f'macd_signal_{period[1]}_ma_{avg_period}'] = result[f'macd_signal_{period[1]}'].rolling(window=avg_period).mean()
-                result[f'is_macd_signal_{period[1]}_rising_in_avg_period_{avg_period}'] = result[f'macd_signal_{period[1]}'] > result[f'macd_signal_{period[1]}_ma_{avg_period}']
-                result[f'is_macd_signal_{period[1]}_dropping_in_avg_period_{avg_period}'] = result[f'macd_signal_{period[1]}'] < result[f'macd_signal_{period[1]}_ma_{avg_period}']
-                result[f'macd_signal_{period[1]}_change_vs_ma_{avg_period}'] = result[f'macd_signal_{period[1]}'] - result[f'macd_signal_{period[1]}_ma_{avg_period}']
+                result[f'macd_signal_{period[1]}_ma_{avg_period}'] = \
+                    result[f'macd_signal_{period[1]}'].rolling(window=avg_period).mean()
+                result[f'is_macd_signal_{period[1]}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'macd_signal_{period[1]}'] > result[f'macd_signal_{period[1]}_ma_{avg_period}']
+                result[f'is_macd_signal_{period[1]}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'macd_signal_{period[1]}'] < result[f'macd_signal_{period[1]}_ma_{avg_period}']
+                result[f'macd_signal_{period[1]}_change_vs_ma_{avg_period}'] = \
+                    result[f'macd_signal_{period[1]}'] - result[f'macd_signal_{period[1]}_ma_{avg_period}']
                 
                 result[f'macd_signal_{period[1]}_pct_change_vs_ma_{avg_period}'] = np.where(  
                     result[f'macd_signal_{period[1]}_ma_{avg_period}'] != 0,
-                    (result[f'macd_signal_{period[1]}'] - result[f'macd_signal_{period[1]}_ma_{avg_period}']) / result[f'macd_signal_{period[1]}_ma_{avg_period}'] * 100,
+                    (result[f'macd_signal_{period[1]}'] - result[f'macd_signal_{period[1]}_ma_{avg_period}']) / \
+                        result[f'macd_signal_{period[1]}_ma_{avg_period}'] * 100,
                     0
                 )
                 
-                result[f'macd_histogram_{period[0]}_ma_{avg_period}'] = result[f'macd_histogram_{period[0]}'].rolling(window=avg_period).mean()
-                result[f'is_macd_histogram_{period[0]}_rising_in_avg_period_{avg_period}'] = result[f'macd_histogram_{period[0]}'] > result[f'macd_histogram_{period[0]}_ma_{avg_period}']
-                result[f'is_macd_histogram_{period[0]}_dropping_in_avg_period_{avg_period}'] = result[f'macd_histogram_{period[0]}'] < result[f'macd_histogram_{period[0]}_ma_{avg_period}']
-                result[f'macd_histogram_{period[0]}_change_vs_ma_{avg_period}'] = result[f'macd_histogram_{period[0]}'] - result[f'macd_histogram_{period[0]}_ma_{avg_period}']
+                result[f'macd_histogram_{period[0]}_ma_{avg_period}'] = \
+                    result[f'macd_histogram_{period[0]}'].rolling(window=avg_period).mean()
+                result[f'is_macd_histogram_{period[0]}_rising_in_avg_period_{avg_period}'] = \
+                    result[f'macd_histogram_{period[0]}'] > result[f'macd_histogram_{period[0]}_ma_{avg_period}']
+                result[f'is_macd_histogram_{period[0]}_dropping_in_avg_period_{avg_period}'] = \
+                    result[f'macd_histogram_{period[0]}'] < result[f'macd_histogram_{period[0]}_ma_{avg_period}']
+                result[f'macd_histogram_{period[0]}_change_vs_ma_{avg_period}'] = \
+                    result[f'macd_histogram_{period[0]}'] - result[f'macd_histogram_{period[0]}_ma_{avg_period}']
                 
                 result[f'macd_histogram_{period[0]}_pct_change_vs_ma_{avg_period}'] = np.where(  
                     result[f'macd_histogram_{period[0]}_ma_{avg_period}'] != 0,
-                    (result[f'macd_histogram_{period[0]}'] - result[f'macd_histogram_{period[0]}_ma_{avg_period}']) / result[f'macd_histogram_{period[0]}_ma_{avg_period}'] * 100,
+                    (result[f'macd_histogram_{period[0]}'] - \
+                        result[f'macd_histogram_{period[0]}_ma_{avg_period}']) / \
+                            result[f'macd_histogram_{period[0]}_ma_{avg_period}'] * 100,
                     0
                 )
 
             result[f'macd_{period[0]}_prev'] = result[f'macd_{period[0]}'].shift(1)
             result[f'macd_signal_{period[1]}_prev'] = result[f'macd_signal_{period[1]}'].shift(1)
-            result[f'macd_{period[0]}_cross_up_signal'] = (result[f'macd_{period[0]}_prev'] < result[f'macd_signal_{period[1]}_prev']) & (result[f'macd_{period[0]}'] > result[f'macd_signal_{period[1]}'])
-            result[f'macd_{period[0]}_cross_down_signal'] = (result[f'macd_{period[0]}_prev'] > result[f'macd_signal_{period[1]}_prev']) & (result[f'macd_{period[0]}'] < result[f'macd_signal_{period[1]}'])
-            result[f'macd_histogram_{period[0]}_buy_signal'] = (result[f'macd_histogram_{period[0]}'].shift(1) < 0) & (result[f'macd_histogram_{period[0]}'] > 0)
-            result[f'macd_histogram_{period[0]}_sell_signal'] = (result[f'macd_histogram_{period[0]}'].shift(1) > 0) & (result[f'macd_histogram_{period[0]}'] < 0)
+            result[f'macd_{period[0]}_cross_up_signal'] = \
+                (result[f'macd_{period[0]}_prev'] < result[f'macd_signal_{period[1]}_prev']) & \
+                    (result[f'macd_{period[0]}'] > result[f'macd_signal_{period[1]}'])
+            result[f'macd_{period[0]}_cross_down_signal'] = \
+                (result[f'macd_{period[0]}_prev'] > result[f'macd_signal_{period[1]}_prev']) & \
+                    (result[f'macd_{period[0]}'] < result[f'macd_signal_{period[1]}'])
+            result[f'macd_histogram_{period[0]}_buy_signal'] = \
+                (result[f'macd_histogram_{period[0]}'].shift(1) < 0) & \
+                    (result[f'macd_histogram_{period[0]}'] > 0)
+            result[f'macd_histogram_{period[0]}_sell_signal'] = \
+                (result[f'macd_histogram_{period[0]}'].shift(1) > 0) & \
+                    (result[f'macd_histogram_{period[0]}'] < 0)
 
             
         result['upper_band'], result['middle_band'], result['lower_band'] = talib.BBANDS(
@@ -682,9 +815,14 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         result[f'stoch_d_change'] = result['stoch_d'].diff()
         result[f'stoch_d_pct_change'] = result['stoch_d'].pct_change() * 100
         
-        result['stoch_buy_signal'] = (result['stoch_k'] > result['stoch_d']) & (result['stoch_k'].shift(1) <= result['stoch_d'].shift(1))
-        result['stoch_buy_signal_2'] = (result['stoch_k'] > settings['stoch_buy_value']) & (result['stoch_k'].shift(1) <= settings['stoch_buy_value'])
-        result['stoch_buy_signal_combined'] = result['stoch_buy_signal'] | result['stoch_buy_signal_2']
+        result['stoch_buy_signal'] = \
+            (result['stoch_k'] > result['stoch_d']) & \
+                (result['stoch_k'].shift(1) <= result['stoch_d'].shift(1))
+        result['stoch_buy_signal_2'] = \
+            (result['stoch_k'] > settings['stoch_buy_value']) & \
+                (result['stoch_k'].shift(1) <= settings['stoch_buy_value'])
+        result['stoch_buy_signal_combined'] = \
+            result['stoch_buy_signal'] | result['stoch_buy_signal_2']
         
         
         result['stoch_rsi_k'], result['stoch_rsi_d'] = talib.STOCHRSI(
@@ -705,8 +843,12 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         result[f'stoch_rsi_d_change'] = result['stoch_rsi_d'].diff()
         result[f'stoch_rsi_d_pct_change'] = result['stoch_rsi_d'].pct_change() * 100
         
-        result['stoch_rsi_buy_signal'] = (result['stoch_rsi_k'] > result['stoch_rsi_d']) & (result['stoch_rsi_k'].shift(1) < result['stoch_rsi_d'].shift(1))
-        result['stoch_rsi_sell_signal'] = (result['stoch_rsi_k'] < result['stoch_rsi_d']) & (result['stoch_rsi_k'].shift(1) > result['stoch_rsi_d'].shift(1))
+        result['stoch_rsi_buy_signal'] = \
+            (result['stoch_rsi_k'] > result['stoch_rsi_d']) & \
+                (result['stoch_rsi_k'].shift(1) < result['stoch_rsi_d'].shift(1))
+        result['stoch_rsi_sell_signal'] = \
+            (result['stoch_rsi_k'] < result['stoch_rsi_d']) & \
+                (result['stoch_rsi_k'].shift(1) > result['stoch_rsi_d'].shift(1))
             
             
         result['typical_price'] = (result['high'] + result['low'] + result['close']) / 3
@@ -718,8 +860,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         
         result['vwap_buy_signal'] = (result['close'] > result['vwap'])
         result['vwap_sell_signal'] = (result['close'] < result['vwap'])
-        result['vwap_cross_up_signal'] = ((result['close'] > result['vwap']) & (result['close'].shift(1) <= result['vwap'].shift(1)))
-        result['vwap_cross_down_signal'] = ((result['close'] < result['vwap']) & (result['close'].shift(1) >= result['vwap'].shift(1)))
+        result['vwap_cross_up_signal'] = \
+            ((result['close'] > result['vwap']) & (result['close'].shift(1) <= result['vwap'].shift(1)))
+        result['vwap_cross_down_signal'] = \
+            ((result['close'] < result['vwap']) & (result['close'].shift(1) >= result['vwap'].shift(1)))
         
         
         result['psar'] = talib.SAR(
@@ -736,8 +880,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         result['psar_buy_signal'] = (result['psar'] < result['close'])
         result['psar_sell_signal'] = (result['psar'] > result['close'])
 
-        result['psar_cross_up_signal'] = (result['psar'] < result['close']) & (result['psar'].shift(1) > result['close'].shift(1))  # Cross from down to up (buy signal)
-        result['psar_cross_down_signal'] = (result['psar'] > result['close']) & (result['psar'].shift(1) < result['close'].shift(1))  # Cross from up to down (sell signal)
+        result['psar_cross_up_signal'] = \
+            (result['psar'] < result['close']) & (result['psar'].shift(1) > result['close'].shift(1))
+        result['psar_cross_down_signal'] = \
+            (result['psar'] > result['close']) & (result['psar'].shift(1) < result['close'].shift(1))
 
             
         result['ma_200'] = result['close'].rolling(window=200).mean()
@@ -758,8 +904,10 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
         result['ma_50_buy_signal'] = (result['close'] > result['ma_50'])
         result['ma_50_sell_signal'] = (result['close'] < result['ma_50'])
 
-        result['ma_50_200_cross_up_signal'] = (result['ma_50'] > result['ma_200']) & (result['ma_50'].shift(1) <= result['ma_200'].shift(1))
-        result['ma_50_200_cross_down_signal'] = (result['ma_50'] < result['ma_200']) & (result['ma_50'].shift(1) >= result['ma_200'].shift(1))
+        result['ma_50_200_cross_up_signal'] = \
+            (result['ma_50'] > result['ma_200']) & (result['ma_50'].shift(1) <= result['ma_200'].shift(1))
+        result['ma_50_200_cross_down_signal'] = \
+            (result['ma_50'] < result['ma_200']) & (result['ma_50'].shift(1) >= result['ma_200'].shift(1))
     
     
         for marker_period in settings['markers_periods']:
@@ -767,18 +915,22 @@ def prepare_df(df=None, regresion=False, clasification=False, settings=None, tra
             if training_mode: 
                 
                 if regresion:
-                    result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100)
+                    result[f'marker_close_pct_change_in_next_{marker_period}_periods'] = \
+                        ((result['close'].shift(-marker_period) - result['close']) / result['close'] * 100)
                     
                 if clasification:
                     result[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
-                        ((result[f'max_close_in_{marker_period}'] - result['close']) / result['close'] * 100 >= settings['success_threshold']) & 
-                        ((result[f'min_close_in_{marker_period}'] - result['close']) / result['close'] * 100 > settings['drop_threshold'])
+                        ((result[f'max_close_in_{marker_period}'] - result['close']) / \
+                            result['close'] * 100 >= settings['success_threshold']) & 
+                        ((result[f'min_close_in_{marker_period}'] - result['close']) / \
+                            result['close'] * 100 > settings['drop_threshold'])
                         )
                 
 
         result.drop(columns=['open_time', 'close_time'])
         result.fillna(0, inplace=True)
-        result[result.select_dtypes(include=['bool']).columns] = result.select_dtypes(include=['bool']).astype(int)
+        result[result.select_dtypes(include=['bool']).columns] = \
+            result.select_dtypes(include=['bool']).astype(int)
 
             
         return result

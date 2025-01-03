@@ -4,7 +4,6 @@ import time
 import pandas as pd
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
-import time
 import os
 from utils.logger_utils import log
 
@@ -189,7 +188,8 @@ def get_full_historical_klines(
         if klines_count:
             first_kline_timestamp = klines_count[0][0]
             first_kline_date = dt.utcfromtimestamp(first_kline_timestamp / 1000)
-            log(f"First available kline timestamp: {first_kline_timestamp}, corresponding to {first_kline_date}")
+            log(f"First available kline timestamp: {first_kline_timestamp}, "
+                f"corresponding to {first_kline_date}")
         else:
             log("No data available.")
             return None
