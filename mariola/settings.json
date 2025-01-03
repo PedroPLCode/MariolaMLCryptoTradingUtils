@@ -35,7 +35,7 @@
         "log_filename": "mariola.log",
         "symbol": "BTCUSDC",
         "interval": "1h",
-        "lookback": "2d",
+        "lookback": "9d",
         "regresion": false,
         "clasification": true,
         "result_marker": "marker_close_trade_success_in_next_14_periods",

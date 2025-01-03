@@ -1,9 +1,13 @@
 from datetime import datetime
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.logger_utils import initialize_logger
-from utils.app_utils import save_pandas_df_info, load_data_from_csv
+from utils.app_utils import (
+    save_pandas_df_info, 
+    load_data_from_csv
+)
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 start_date = datetime(2020, 12, 13)
 end_date = datetime(2025, 1, 1)

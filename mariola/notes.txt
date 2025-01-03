@@ -1,11 +1,11 @@
 scikit-learn
 Random Forest
 
-keras
+tensorflow.keras
 PCM LSTM
 
-progress tracker:
-BTCUSDC, interval 1h, from 1 Jan, 2020 - fetched, calculated
+progress tracker
+BTCUSDC, interval 1h, from 1 Jan, 2020 - clasification=True, regresion=False - fetched, calculated, trained, predict
 BTCUSDC, interval 30m, from 1 Jan, 2020
 BTCUSDC, interval 15m, from 1 Jan, 2020
 ETHUSDC, interval 1h, from 1 Jan, 2020
@@ -19,3 +19,8 @@ bool['marker_close_trade_success_in_next_28_periods']
 regresion
 float64['marker_close_pct_change_in_next_14_periods']
 float64['marker_close_pct_change_in_next_28_periods']
+
+to do
+refactor
+pep8
+pytests
