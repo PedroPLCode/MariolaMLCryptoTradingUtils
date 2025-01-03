@@ -4,24 +4,48 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
 from utils.logger_utils import log
 
-def normalize_df(result_df=None):
+def normalize_df(result_df=None, 
+                 training_mode=True, 
+                 result_marker=False
+                 ):
     """
-    Normalize the numeric columns in a DataFrame using MinMaxScaler, while replacing infinite values and clipping extreme values.
-    
+    Normalize the numeric columns in a DataFrame using MinMaxScaler, while replacing infinite values 
+    and clipping extreme values. Non-numeric columns are excluded from normalization, and the 
+    `result_marker` column (if specified) is retained without modification.
+
     Args:
         result_df (pd.DataFrame): The input DataFrame containing both numeric and non-numeric columns.
-    
+        training_mode (bool): If True, it indicates that the function is being used for training. 
+                               In this mode, the `result_marker` column is excluded from the normalization 
+                               and included in the final output.
+        result_marker (str): The name of the column to exclude from normalization but include in the final DataFrame. 
+                             It must be a valid column name in `result_df`. If `None`, no column is excluded.
+
     Returns:
-        pd.DataFrame: A DataFrame with normalized numeric columns. 
-   
+        pd.DataFrame: A DataFrame with normalized numeric columns and the `result_marker` column added 
+                      at the end, if specified.
+
+    Raises:
+        ValueError: If `result_df` is `None`, empty, or if `result_marker` is specified but not found 
+                    in the DataFrame columns.
+
     Notes:
-        This function replaces `np.inf` and `-np.inf` values with 0, and clips numeric values to the range [-1.8e308, 1.8e308].
-        Non-numeric columns are excluded from the normalization process.
+        - The function replaces `np.inf` and `-np.inf` values in the DataFrame with 0.
+        - Numeric values are clipped to the range [-1.8e308, 1.8e308] to avoid extreme outliers.
+        - Non-numeric columns such as booleans, datetimes, and strings are excluded from the normalization process.
+        - In training mode, the `result_marker` column is excluded from normalization but included in the final DataFrame.
+
+    Example:
+        normalized_df = normalize_df(df, training_mode=True, result_marker='target')
     """
     try:
         
         if result_df is None or result_df.empty:
             raise ValueError("result_df must be provided and cannot be None.")
+        
+        if training_mode:
+            if result_marker is None or result_marker not in result_df.columns:
+                raise ValueError("result_marker must be a valid column in result_df.")
         
         non_numeric_features = result_df.select_dtypes(
             include=['bool', 'datetime', 'string']
@@ -30,6 +54,9 @@ def normalize_df(result_df=None):
         numeric_features = result_df.select_dtypes(
             include=['float64', 'int64']
         ).columns.tolist()
+        
+        if training_mode and result_marker in numeric_features:
+            numeric_features.remove(result_marker)
         
         result_df = result_df.replace([np.inf, -np.inf], 0)
         
@@ -43,6 +70,9 @@ def normalize_df(result_df=None):
             scaler.fit_transform(result_df[numeric_features]),
             columns=numeric_features
         )
+        
+        if training_mode and result_marker:
+            df_normalized[result_marker] = result_df[result_marker].values
         
         return df_normalized
     

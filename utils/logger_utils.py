@@ -55,14 +55,20 @@ def log(message):
     Returns:
         None
     """
-    if log_filename is None:
-        raise RuntimeError("Logger has not been initialized. Call initialize_logger() first.")
-    
-    now = datetime.now()
-    formatted_now = now.strftime('%Y-%m-%d %H:%M:%S')
-    log_message = f"[{formatted_now}] {message}"
-    
-    print(log_message)
-    
-    with open(log_filename, 'a') as log_file:
-        log_file.write(log_message + '\n')
+    try:
+        
+        if log_filename is None:
+            raise RuntimeError("Logger has not been initialized. Call initialize_logger() first.")
+        
+        now = datetime.now()
+        formatted_now = now.strftime('%Y-%m-%d %H:%M:%S')
+        log_message = f"[{formatted_now}] {message}"
+        
+        print(log_message)
+        
+        with open(log_filename, 'a') as log_file:
+            log_file.write(log_message + '\n')
+        
+    except Exception as e:
+        print(e)
+        return None

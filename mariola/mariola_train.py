@@ -1,6 +1,7 @@
 import sys
 from time import time
 from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
@@ -10,15 +11,13 @@ from utils.logger_utils import initialize_logger, log
 from utils.app_utils import (
     extract_settings_data, 
     load_data_from_csv,
-    save_pandas_df_info
+    save_df_info
 )
 from mariola_utils import (
     normalize_df, 
     handle_pca, 
     create_sequences
 )
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 def mariola_train():
     
@@ -36,6 +35,8 @@ def mariola_train():
 
     settings_data = extract_settings_data(settings_filename)
 
+    regresion=settings_data['settings']['regresion']
+    clasification=settings_data['settings']['clasification']
     result_marker=settings_data['settings']['result_marker']
     window_size=settings_data['settings']['window_size']
     lookback=settings_data['settings']['window_lookback']
@@ -53,11 +54,12 @@ def mariola_train():
         f"starting normalize_df."
         )
     df_normalized = normalize_df(
-        result_df=result_df
+        result_df=result_df,
+        result_marker=result_marker
         )
     csv_filename = data_filename.replace('_calculated', '_normalized')
     info_filename = csv_filename.replace('csv', 'info')
-    save_pandas_df_info(df_normalized, info_filename)
+    save_df_info(df_normalized, info_filename)
     log(f"MariolaCryptoTradingBot. normalize_df completed.")
 
     log(f"MariolaCryptoTradingBot. Principal Component Analysis.\n"
@@ -71,7 +73,7 @@ def mariola_train():
         )
     csv_filename = csv_filename.replace('_normalized', '_pca_analyzed')
     info_filename = csv_filename.replace('csv', 'info')
-    save_pandas_df_info(df_normalized, info_filename)
+    save_df_info(df_normalized, info_filename)
     log(f"MariolaCryptoTradingBot. handle_pca completed.")
 
     log(f"MariolaCryptoTradingBot. Create sequences.\n"
@@ -88,7 +90,7 @@ def mariola_train():
         )
     csv_filename = csv_filename.replace('_pca_analyzed', '_sequenced')
     info_filename = csv_filename.replace('csv', 'info')
-    save_pandas_df_info(df_normalized, info_filename)
+    save_df_info(df_normalized, info_filename)
     log(f"MariolaCryptoTradingBot. create_sequences completed.")
 
     log(f"MariolaCryptoTradingBot. Splitting the data into training and testing sets.\n"
@@ -129,23 +131,38 @@ def mariola_train():
     log(f"MariolaCryptoTradingBot. Dropout completed.")
 
     log(f"MariolaCryptoTradingBot. Output layer (binary classification - predicting one label).")
-    model.add(
-        Dense(
-            units=1, 
-            activation='sigmoid'
+    if clasification:
+        model.add(
+            Dense(
+                units=1, 
+                activation='sigmoid'
+                )
             )
-        )
+    elif regresion:
+        model.add(
+            Dense(1)
+            )
     log(f"MariolaCryptoTradingBot. Layers completed.")
 
     log(f"MariolaCryptoTradingBot. Compiling the model.")
-    model.compile(
-        optimizer='adam', 
-        loss='binary_crossentropy', 
-        metrics=['accuracy']
-        )
+    if clasification:
+        model.compile(
+            optimizer='adam', 
+            loss='binary_crossentropy', 
+            metrics=['accuracy']
+            )
+    elif regresion:
+        model.compile(
+            optimizer='adam', 
+            loss='mse',
+            metrics=['mae']
+            )
     log(f"MariolaCryptoTradingBot. Compiling completed.")
 
-    log(f"MariolaCryptoTradingBot. Training the model.")
+    log(f"MariolaCryptoTradingBot. Training the model.\n"
+        f"Shape of X_train: {X_train.shape}\n"
+        f"Shape of y_train: {y_train.shape}"
+        )
     early_stopping = EarlyStopping(
         monitor='val_loss', 
         patience=3, 
@@ -154,7 +171,7 @@ def mariola_train():
     model.fit(
         X_train, 
         y_train, 
-        epochs=10, 
+        epochs=50, 
         batch_size=32, 
         validation_data=(
             X_test, 
@@ -177,7 +194,8 @@ def mariola_train():
 
     end_time = time()
 
-    log(f"MariolaCryptoTradingBot. LSTM Model training completed"
+    log(f"MariolaCryptoTradingBot. LSTM Model training completed.\n"
+        f"{'Regresion' if regresion else 'Clasification'}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
         )
     

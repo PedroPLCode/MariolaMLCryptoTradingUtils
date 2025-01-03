@@ -1,6 +1,7 @@
 import sys
 from time import time
 from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.logger_utils import initialize_logger, log
 from utils.parser_utils import get_parsed_arguments
 from utils.calc_utils import prepare_df
@@ -8,10 +9,8 @@ from utils.app_utils import (
     extract_settings_data, 
     load_data_from_csv,
     save_data_to_csv, 
-    save_pandas_df_info
+    save_df_info
 )
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 def mariola_calc():
     
@@ -55,12 +54,13 @@ def mariola_calc():
     csv_filename = data_filename.replace('_fetched', '_calculated')
     info_filename = csv_filename.replace('csv', 'info')
     save_data_to_csv(result_df, csv_filename)
-    save_pandas_df_info(result_df, info_filename)
+    save_df_info(result_df, info_filename)
 
     end_time = time()
 
-    log(f"MariolaCryptoTradingBot. Calculating Technical Analysis parameters completed"
-        f"prepare_df completed and result_df saved to {csv_filename}."
+    log(f"MariolaCryptoTradingBot. Calculating Technical Analysis parameters completed.\n"
+        f"prepare_df completed and result_df saved to {csv_filename}.\n"
+        f"{'Regresion' if regresion else 'Clasification'}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
         )
     

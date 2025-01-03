@@ -71,7 +71,9 @@ def main():
         f"starting normalize_df."
         )
     df_normalized = normalize_df(
-        result_df=result_df
+        result_df=result_df,
+        training_mode=False,
+        result_marker=result_marker
         )
     log(f"MariolaCryptoTradingBot. normalize_df completed.")
 
@@ -111,12 +113,16 @@ def main():
     log(f"MariolaCryptoTradingBot. Prediction completed.")
 
     log(f"MariolaCryptoTradingBot. Converting the predictions to binary values (0 or 1).")
-    y_pred = (y_pred > 0.5)
-    log(f"Predictions:\n{y_pred[:10]}")
+    if clasification:
+        y_pred = (y_pred > 0.5)
+    log(f"Predictions ({'regresion' if regresion else 'clasification'}):")
+    for i, val in enumerate(y_pred[-10:]):
+        log(f"Index {len(y_pred) - 10 + i}: {val}")
 
     end_time = time()
 
-    log(f"MariolaCryptoTradingBot. Pradiction completed"
+    log(f"MariolaCryptoTradingBot. {'Regresion' if regresion else 'Clasification'} completed.\n"
+        f"Prediction based on latest data: {y_pred[-1]}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
         )
     

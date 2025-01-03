@@ -66,7 +66,7 @@ def load_data_from_csv(filename):
         return None
 
 
-def save_pandas_df_info(df, filename):
+def save_df_info(df, filename):
     """
     Saves basic information and the last 3 rows of a pandas DataFrame to a file.
 
@@ -163,5 +163,5 @@ def save_dataframe_with_info(dataframe, base_filename, stage_name):
     """
     csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
     info_filename = csv_filename.replace('csv', 'info')
-    save_pandas_df_info(dataframe, info_filename)
+    save_df_info(dataframe, info_filename)
     log(f"{stage_name.capitalize()} data saved to {csv_filename}.")

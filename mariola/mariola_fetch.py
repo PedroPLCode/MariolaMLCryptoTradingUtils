@@ -1,16 +1,15 @@
 import sys
 from time import time
 from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
 from utils.api_utils import get_full_historical_klines
 from utils.app_utils import (
     extract_settings_data, 
     save_data_to_csv, 
-    save_pandas_df_info
+    save_df_info
 )
-
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 def mariola_fetch():
     
@@ -68,7 +67,7 @@ def mariola_fetch():
             csv_filename = f"data/df_{step_name}_fetched.csv"
             info_filename = csv_filename.replace('csv', 'info')
             save_data_to_csv(historical_klines, csv_filename)
-            save_pandas_df_info(historical_klines, info_filename)
+            save_df_info(historical_klines, info_filename)
             log(f"MariolaCryptoTradingBot. historical_klines saved to {csv_filename}.")
             
             log(f"MariolaCryptoTradingBot. Fetch step completed.\n"
