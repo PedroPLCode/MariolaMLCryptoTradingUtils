@@ -4,7 +4,6 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-
 def get_parsed_arguments(first_arg_str, second_arg_string=None):
     """
     Parses and returns one or two command-line arguments.

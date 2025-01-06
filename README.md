@@ -1,6 +1,6 @@
 # MariolaCryptoTradingBot
 
-MariolaCryptoTradingBot is an advanced evolution of [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot). Born from the core of StefanCryptoTradingBot, she represents a significant upgrade, offering powerful features and intelligent capabilities. 
+MariolaCryptoTradingBot is an advanced evolution of [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot). Born from the rib of StefanCryptoTradingBot, she represents a significant upgrade, offering powerful features and intelligent capabilities. In the future, MariolaCryptoTradingBot will be integrated as a module into StefanCryptoTradingBot, expanding its functionality and skills.
 
 ## Features
 
@@ -53,8 +53,8 @@ pip install -r requirements.txt
 
 4. Configure your environment variables by creating a .env file with your Binance API credentials.
 ```bash
-BINANCE_GENERAL_API_KEY='binance_general_api_key'
-BINANCE_GENERAL_API_SECRET='binance_general_api_secret'
+BINANCE_GENERAL_API_KEY='your_binance_general_api_key'
+BINANCE_GENERAL_API_SECRET='your_binance_general_api_secret'
 ```
 
 5. Run tests:
@@ -71,8 +71,9 @@ python mariola_predict.py settings.json model_filename.keras
 ```
 
 ## Important!
-Familiarize yourself thoroughly with the source code. Understand its operation. Only then will you be able to customize and adjust the bot to your own needs, preferences, and requirements.
+Familiarize yourself thoroughly with the source code. Understand its operation. Only then will you be able to customize and adjust scripts to your own needs, preferences, and requirements.
 
+Code created by me, with no small contribution from Dr. Google and Mr. ChatGPT.
 Any comments welcome.
 
 MariolaCryptoTradingBot Project is under GNU General Public License Version 3, 29 June 2007

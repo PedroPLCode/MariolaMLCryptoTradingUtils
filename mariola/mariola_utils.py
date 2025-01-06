@@ -169,7 +169,10 @@ def create_sequences(df_reduced=None,
         X = []
         y = [] if training_mode else None
         
-        df_features = df_reduced.drop(columns=[result_marker]) if training_mode else df_reduced
+        df_features = df_reduced
+        
+        if training_mode:
+            df_features = df_reduced.drop(columns=[result_marker])
 
         for i in range(window_size, len(df_reduced) - lookback):
             X.append(df_features.iloc[i-window_size:i].values)

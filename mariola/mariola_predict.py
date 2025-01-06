@@ -14,7 +14,7 @@ from mariola_utils import (
     create_sequences
 )
 
-def main():
+def mariola_predict():
     
     start_time = time()
 
@@ -127,4 +127,4 @@ def main():
         )
     
 if __name__ == "__main__":
-    main()
+    mariola_predict()

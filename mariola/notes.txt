@@ -17,10 +17,6 @@ bool['marker_close_trade_success_in_next_14_periods']
 bool['marker_close_trade_success_in_next_28_periods']
 
 regresion preferred
-float64['marker_close_pct_change_in_next_14_periods']
-float64['marker_close_pct_change_in_next_28_periods'] preferred
-
-to do
-refactor
-pep8
-pytests
+float64['marker_close_pct_change_in_next_7_periods']
+float64['marker_close_pct_change_in_next_14_periods'] preferred
+float64['marker_close_pct_change_in_next_28_periods']
