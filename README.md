@@ -20,7 +20,7 @@ The models can be used in real-time applications, such as trading bots. This rep
 **Ongoing Development**
 
 ## Key Features:
-- **Modular Design**: It is designed as a modular component, which can be used within StefanCryptoTradingBot or any other system.
+- **Modular Design**: It is designed as a modular component, which can be used within [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot) or any other system.
 - **Core Scripts**: The bot includes essential scripts:
   - `fetch_data.py`: Fetch historical market data.
   - `calculate_df.py`: Process and calculate technical indicators for the data.
