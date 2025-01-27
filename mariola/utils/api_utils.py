@@ -23,9 +23,12 @@ def create_binance_client():
     """
     
     try:
+        
         api_key = os.environ.get('BINANCE_GENERAL_API_KEY')
         api_secret = os.environ.get('BINANCE_GENERAL_API_SECRET')
-        return Client(api_key, api_secret)
+        binance_client = Client(api_key, api_secret)
+        
+        return binance_client
     
     except Exception as e:
         log(e)
@@ -70,6 +73,7 @@ def get_klines(
     """
     
     try: 
+        
         binance_client = create_binance_client()
         klines = None
         if not start_str and not end_str:

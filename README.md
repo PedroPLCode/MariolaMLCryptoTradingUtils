@@ -1,6 +1,6 @@
 # MariolaCryptoTradingBot
 
-MariolaCryptoTradingBot is an advanced evolution of [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot). Born from the rib of StefanCryptoTradingBot, she represents a significant upgrade, offering powerful features and intelligent capabilities. In the future, MariolaCryptoTradingBot will be integrated as a module into StefanCryptoTradingBot, expanding its functionality and skills.
+MariolaCryptoTradingBot is a collection of powerful scripts designed for training and optimizing trading models to be later used in the main trading bot, [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot). Born from the rib of StefanCryptoTradingBot, this project focuses on developing machine learning models that predict cryptocurrency market trends, which can be integrated into the trading system for real-time autonomous decision-making.
 
 ## Features
 

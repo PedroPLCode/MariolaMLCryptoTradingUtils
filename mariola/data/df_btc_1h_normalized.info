@@ -1,0 +1,30 @@
+Pandas DataFrame:
+Index(['open', 'high', 'low', 'close', 'volume', 'rsi_14', 'rsi_14_buy_signal',
+       'rsi_14_sell_signal', 'macd_12', 'macd_signal_9', 'macd_histogram_12',
+       'macd_buy_signal', 'macd_sell_signal', 'ema_9', 'ema_21',
+       'ema_buy_signal', 'ema_sell_signal', 'upper_band', 'middle_band',
+       'lower_band', 'bollinger_buy_signal', 'bollinger_sell_signal',
+       'rsi_macd_ratio', 'macd_signal_diff', 'close_time_hour',
+       'close_time_weekday', 'close_time_month', 'hour_sin', 'hour_cos',
+       'weekday_sin', 'weekday_cos', 'month_sin', 'month_cos', 'is_weekend',
+       'hammer', 'is_hammer_morning', 'is_hammer_weekend', 'morning_star',
+       'is_morning_star_morning', 'is_morning_star_weekend',
+       'bullish_engulfing', 'is_bullish_engulfing_morning',
+       'is_bullish_engulfing_weekend', 'close_pct_change', 'close_lag_7',
+       'volume_pct_change', 'volume_lag_7', 'rsi_14_pct_change',
+       'rsi_14_lag_7', 'is_support', 'is_resistance', 'momentum_positive',
+       'momentum_negative', 'trend_reversal_signal',
+       'marker_close_pct_change_in_next_14_periods'],
+      dtype='object')
+
+Number of Columns:
+55
+
+Number of Rows:
+61881
+
+Last 3 rows:
+    open     high      low    close   volume   rsi_14  rsi_14_buy_signal  rsi_14_sell_signal  macd_12  macd_signal_9  macd_histogram_12  macd_buy_signal  macd_sell_signal    ema_9   ema_21  ema_buy_signal  ema_sell_signal  upper_band  middle_band  lower_band  bollinger_buy_signal  bollinger_sell_signal  rsi_macd_ratio  macd_signal_diff  close_time_hour  close_time_weekday  close_time_month  hour_sin  hour_cos  weekday_sin  weekday_cos  month_sin  month_cos  is_weekend  hammer  is_hammer_morning  is_hammer_weekend  morning_star  is_morning_star_morning  is_morning_star_weekend  bullish_engulfing  is_bullish_engulfing_morning  is_bullish_engulfing_weekend  close_pct_change  close_lag_7  volume_pct_change  volume_lag_7  rsi_14_pct_change  rsi_14_lag_7  is_support  is_resistance  momentum_positive  momentum_negative  trend_reversal_signal  marker_close_pct_change_in_next_14_periods
+0.982296 0.976805 0.983526 0.981053 0.012792 0.656169                0.0                 0.0 0.654796       0.645843           0.607852              1.0               0.0 0.986133 0.984858             1.0              0.0    0.964438     0.981811    0.972320                   0.0                    0.0        0.962040          0.605070         0.782609            0.666667               0.0  0.000000   0.50000     0.277479          0.0       0.75   0.933013         0.0     0.0                0.0                0.0           0.0                      0.0                      0.0                0.0                           0.0                           0.0          0.508173     0.973228           0.006669      0.003766           0.170901      0.618657         0.0            0.0                0.0                1.0                    1.0                                         0.0
+0.981049 0.971975 0.979990 0.975662 0.006728 0.591146                0.0                 0.0 0.647371       0.649425           0.576421              1.0               0.0 0.986126 0.985369             1.0              0.0    0.964942     0.982677    0.973539                   0.0                    0.0        0.962040          0.619421         0.826087            0.666667               0.0  0.017037   0.62941     0.277479          0.0       0.75   0.933013         0.0     0.0                0.0                0.0           0.0                      0.0                      0.0                0.0                           0.0                           0.0          0.496648     0.974211           0.002743      0.004573           0.152053      0.626507         0.0            0.0                0.0                1.0                    0.0                                         0.0
+0.975662 0.964221 0.979154 0.975275 0.000745 0.586645                0.0                 0.0 0.639304       0.650456           0.549751              1.0               0.0 0.986044 0.985800             1.0              0.0    0.964743     0.983740    0.975893                   0.0                    0.0        0.962041          0.629751         0.869565            0.666667               0.0  0.066987   0.75000     0.277479          0.0       0.75   0.933013         0.0     0.0                0.0                0.0           0.0                      0.0                      0.0                0.0                           0.0                           0.0          0.510541     0.970440           0.000577      0.005485           0.174881      0.581456         0.0            0.0                0.0                1.0                    0.0                                         0.0

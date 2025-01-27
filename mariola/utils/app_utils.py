@@ -27,8 +27,10 @@ def save_data_to_csv(data, filename):
         return None
         
     try:
+        
         data.to_csv(filename, index=False)
         log(f"Klines data saved to {filename}")
+        
     except Exception as e:
         log(e)
         return None
@@ -58,9 +60,12 @@ def load_data_from_csv(filename):
         return None
     
     try:
+        
         df = pd.read_csv(filename)
         log(f"Klines data loaded from {filename}")
+        
         return df
+    
     except Exception as e:
         log(e)
         return None
@@ -161,7 +166,13 @@ def save_dataframe_with_info(dataframe, base_filename, stage_name):
     >>> save_dataframe_with_info(df, 'data_calculated.csv', 'normalized')
     Data saved to data_normalized.csv.
     """
-    csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
-    info_filename = csv_filename.replace('csv', 'info')
-    save_df_info(dataframe, info_filename)
-    log(f"{stage_name.capitalize()} data saved to {csv_filename}.")
+    try:
+        
+        csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
+        info_filename = csv_filename.replace('csv', 'info')
+        save_df_info(dataframe, info_filename)
+        log(f"{stage_name.capitalize()} data saved to {csv_filename}.")
+        
+    except Exception as e:
+        log(e)
+        return None

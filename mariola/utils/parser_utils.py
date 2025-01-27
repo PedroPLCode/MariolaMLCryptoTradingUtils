@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-def get_parsed_arguments(first_arg_str, second_arg_string=None):
+def get_parsed_arguments(first_arg_string, second_arg_string=None):
     """
     Parses and returns one or two command-line arguments.
 
@@ -13,7 +13,7 @@ def get_parsed_arguments(first_arg_str, second_arg_string=None):
     is accompanied by a descriptive message passed to the function.
 
     Parameters:
-        first_arg_str (str): A description for the first argument.
+        first_arg_string (str): A description for the first argument.
         second_arg_string (str, optional): A description for the second argument. Defaults to None.
 
     Returns:
@@ -25,7 +25,7 @@ def get_parsed_arguments(first_arg_str, second_arg_string=None):
         parser.add_argument(
             'first_argument',
             type=str,
-            help=f"A required argument. {first_arg_str}"
+            help=f"A required argument. {first_arg_string}"
         )
         parser.add_argument(
             'second_argument',

@@ -4,11 +4,11 @@ PRIVATE_API_KEY.py
 # csv files for backtesting
 *.csv
 
-# info files for backtesting
-*.info
-
-# ml models
+# ml models files 
+models/
 *.keras
+*.model
+*.joblib
 
 # logs
 *.log

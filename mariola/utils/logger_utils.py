@@ -11,6 +11,8 @@ def initialize_logger(settings_filename):
     which determines where log messages will be written. If the file does not exist, 
     is invalid JSON, or does not contain the required key, the program exits with an error message.
 
+    This function modifies the global variable `log_filename` with the log file path.
+
     Parameters:
         settings_filename (str): The path to the JSON settings file.
 
@@ -23,10 +25,13 @@ def initialize_logger(settings_filename):
         None
     """
     global log_filename
+    
     try:
+        
         with open(settings_filename, 'r') as f:
             settings_data = json.load(f)
             log_filename = settings_data['settings']['log_filename']
+            
     except FileNotFoundError:
         print(f"Error: File {settings_filename} not found.")
         exit(1)
@@ -50,7 +55,7 @@ def log(message):
         message (str): The log message to be recorded.
 
     Raises:
-        RuntimeError: If the logger has not been initialized by calling `initialize_logger()`.
+        RuntimeError: If the logger has not been initialized by calling `initialize_logger()` first.
 
     Returns:
         None

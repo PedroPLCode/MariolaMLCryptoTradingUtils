@@ -14,21 +14,6 @@
             "symbol": "BTCUSDT",
             "interval": "15m",
             "start_str": "1 Jan, 2018"
-        },
-        "eth_1h": {
-            "symbol": "ETHUSDC",
-            "interval": "1h",
-            "start_str": "1 Jan, 2018"
-        },
-        "eth_30m": {
-            "symbol": "ETHUSDC",
-            "interval": "30m",
-            "start_str": "1 Jan, 2018"
-        },
-        "eth_15m": {
-            "symbol": "ETHUSDC",
-            "interval": "15m",
-            "start_str": "1 Jan, 2018"
         }
     },
     "settings": {
@@ -36,8 +21,8 @@
         "symbol": "BTCUSDC",
         "interval": "1h",
         "lookback": "9d",
-        "regresion": true,
-        "clasification": false,
+        "regression": true,
+        "classification": false,
         "result_marker": "marker_close_pct_change_in_next_14_periods",
         "window_size": 30,
         "window_lookback": 14,
@@ -59,6 +44,7 @@
         "psar_maximum": 0.2,
         "lag_min": 1,
         "lag_max": 7,
+        "lag_period": 7,
         "marker_periods": 14,
         "rsi_buy_value": 30,
         "rsi_sell_value": 70,

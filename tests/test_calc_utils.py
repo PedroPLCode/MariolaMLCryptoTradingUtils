@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from utils.calc_utils import is_hammer, is_morning_star, is_bullish_engulfing
+from mariola.utils.df_utils import find_hammer_patterns, find_morning_star_patterns, find_bullish_engulfing_patterns
 
 @pytest.fixture
 def sample_data():
@@ -13,9 +13,9 @@ def sample_data():
     return pd.DataFrame(data)
 
 
-def test_is_hammer(sample_data):
+def test_find_hammer_patterns(sample_data):
     df = sample_data.copy()
-    result = is_hammer(df)
+    result = find_hammer_patterns(df)
     
     assert 'hammer' in result.columns
 
@@ -23,9 +23,9 @@ def test_is_hammer(sample_data):
     assert result['hammer'].tolist() == expected
 
 
-def test_is_morning_star(sample_data):
+def test_find_morning_star_patterns(sample_data):
     df = sample_data.copy()
-    result = is_morning_star(df)
+    result = find_morning_star_patterns(df)
 
     assert 'morning_star' in result.columns
 
@@ -33,9 +33,9 @@ def test_is_morning_star(sample_data):
     assert result['morning_star'].tolist() == expected
 
 
-def test_is_bullish_engulfing(sample_data):
+def test_find_bullish_engulfing_patterns(sample_data):
     df = sample_data.copy()
-    result = is_bullish_engulfing(df)
+    result = find_bullish_engulfing_patterns(df)
 
     assert 'bullish_engulfing' in result.columns
 
@@ -47,23 +47,23 @@ def test_empty_dataframe():
     empty_df = pd.DataFrame(columns=['open', 'high', 'low', 'close'])
 
     with pytest.raises(ValueError):
-        is_hammer(empty_df)
+        find_hammer_patterns(empty_df)
 
     with pytest.raises(ValueError):
-        is_morning_star(empty_df)
+        find_morning_star_patterns(empty_df)
 
     with pytest.raises(ValueError):
-        is_bullish_engulfing(empty_df)
+        find_bullish_engulfing_patterns(empty_df)
 
 
 def test_invalid_dataframe():
     invalid_df = pd.DataFrame({})
 
     with pytest.raises(KeyError):
-        is_hammer(invalid_df)
+        find_hammer_patterns(invalid_df)
 
     with pytest.raises(KeyError):
-        is_morning_star(invalid_df)
+        find_morning_star_patterns(invalid_df)
 
     with pytest.raises(KeyError):
-        is_bullish_engulfing(invalid_df)
+        find_bullish_engulfing_patterns(invalid_df)
