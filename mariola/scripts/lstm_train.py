@@ -41,6 +41,7 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
+from utils.plot_utils import visualise_model_performance
 from utils.app_utils import (
     extract_settings_data, 
     load_data_from_csv,
@@ -244,6 +245,7 @@ def train_lstm_model():
     model.summary()
     
     log("Evaluating the model on test data.")
+    y_pred = model.predict(X_test)
     test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
     log(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.4f}")
 
@@ -252,9 +254,18 @@ def train_lstm_model():
     log(f"Model saved as {model_filename}")
 
     end_time = time()
+
     log(f"LSTM Model training completed.\n"
         f"{'regression' if regression else 'classification'}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
+        )
+    
+    visualise_model_performance(
+        y_test, 
+        y_pred, 
+        result_marker, 
+        regression, 
+        classification
         )
 
 if __name__ == "__main__":

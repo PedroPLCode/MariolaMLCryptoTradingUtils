@@ -3,7 +3,7 @@ import numpy as np
 import talib
 from utils.logger_utils import log
 
-def find_hammer_patterns(df):
+def find_ml_hammer_patterns(df):
     """
     Identifies the Hammer candlestick pattern and adds related features to the DataFrame.
 
@@ -50,7 +50,7 @@ def find_hammer_patterns(df):
         return None
 
 
-def find_morning_star_patterns(df):
+def find_ml_morning_star_patterns(df):
     """
     Identifies the Morning Star candlestick pattern and adds related features to the DataFrame.
 
@@ -97,7 +97,7 @@ def find_morning_star_patterns(df):
         return None
 
 
-def find_bullish_engulfing_patterns(df):
+def find_ml_bullish_engulfing_patterns(df):
     """
     Identifies the Bullish Engulfing candlestick pattern and adds related features to the DataFrame.
 
@@ -145,7 +145,7 @@ def find_bullish_engulfing_patterns(df):
         return None
     
     
-def calculate_pct_change_and_lags(df, column_names_list, lag_period):
+def calculate_ml_pct_change_and_lags(df, column_names_list, lag_period):
     """
     Adds percentage change and lag features to multiple columns in the DataFrame.
 
@@ -182,7 +182,7 @@ def calculate_pct_change_and_lags(df, column_names_list, lag_period):
             return None
         
         
-def calculate_momentum_signals(df, general_timeperiod):
+def calculate_ml_momentum_signals(df, general_timeperiod):
     """
     Adds momentum-related signals to the DataFrame based on the close price.
 
@@ -215,7 +215,7 @@ def calculate_momentum_signals(df, general_timeperiod):
         return None
 
 
-def calculate_rsi(df, general_timeperiod, rsi_buy_value, rsi_sell_value):
+def calculate_ml_rsi(df, general_timeperiod, rsi_buy_value, rsi_sell_value):
     """
     Calculates the Relative Strength Index (RSI) and generates buy/sell signals.
 
@@ -249,7 +249,7 @@ def calculate_rsi(df, general_timeperiod, rsi_buy_value, rsi_sell_value):
         return None
 
 
-def calculate_ema(df, ema_fast_timeperiod, ema_slow_timeperiod):
+def calculate_ml_ema(df, ema_fast_timeperiod, ema_slow_timeperiod):
     """
     Calculates the Exponential Moving Averages (EMA) and generates buy/sell signals.
 
@@ -287,7 +287,7 @@ def calculate_ema(df, ema_fast_timeperiod, ema_slow_timeperiod):
         return None
 
 
-def calculate_macd(df, macd_timeperiod, macd_signalperiod):
+def calculate_ml_macd(df, macd_timeperiod, macd_signalperiod):
     """
     Calculates the Moving Average Convergence Divergence (MACD) and generates buy/sell signals.
 
@@ -325,7 +325,7 @@ def calculate_macd(df, macd_timeperiod, macd_signalperiod):
         return None
 
 
-def calculate_bollinger_bands(df, bollinger_timeperiod, bollinger_nbdev):
+def calculate_ml_bollinger_bands(df, bollinger_timeperiod, bollinger_nbdev):
     """
     Calculates Bollinger Bands and generates buy/sell signals.
 
@@ -361,7 +361,7 @@ def calculate_bollinger_bands(df, bollinger_timeperiod, bollinger_nbdev):
         return None
 
 
-def calculate_time_patterns(df):
+def calculate_ml_time_patterns(df):
     """
     Adds time-based features to the DataFrame based on the 'close_time' column.
 
@@ -402,7 +402,7 @@ def calculate_time_patterns(df):
         return None
         
         
-def calculate_rsi_macd_ratio_and_diff(df):
+def calculate_ml_rsi_macd_ratio_and_diff(df):
     """
     Preprocesses the input DataFrame for use in a Random Forest model.
 
@@ -432,7 +432,7 @@ def calculate_rsi_macd_ratio_and_diff(df):
         return None
     
     
-def handle_initial_df_preparaition(df):
+def handle_initial_ml_df_preparaition(df):
     """
     Prepares the initial DataFrame by converting specific columns to numeric types.
 
@@ -467,7 +467,7 @@ def handle_initial_df_preparaition(df):
         return None
     
     
-def add_regression_etiquete(df, marker_period):
+def add_ml_regression_etiquete(df, marker_period):
     """
     Adds a regression label to the DataFrame.
 
@@ -498,7 +498,7 @@ def add_regression_etiquete(df, marker_period):
         return None
     
     
-def add_classification_etiquete(df, marker_period, success_threshold, drop_threshold):
+def add_ml_classification_etiquete(df, marker_period, success_threshold, drop_threshold):
     """
     Adds a classification label to the DataFrame.
 
@@ -539,7 +539,7 @@ def add_classification_etiquete(df, marker_period, success_threshold, drop_thres
         return None
     
     
-def handle_final_df_cleaninig(df, columns_to_drop):
+def handle_final_ml_df_cleaninig(df, columns_to_drop):
     """
     Performs final cleaning on the DataFrame.
 
@@ -572,7 +572,7 @@ def handle_final_df_cleaninig(df, columns_to_drop):
         return None
 
     
-def prepare_df(df=None, 
+def prepare_ml_df(df=None, 
                regression=False, 
                classification=False, 
                settings=None, 
@@ -601,7 +601,7 @@ def prepare_df(df=None,
         
         result = df.copy()
         
-        handle_initial_df_preparaition(result)
+        handle_initial_ml_df_preparaition(result)
         
         general_timeperiod = settings['general_timeperiod']
         bollinger_timeperiod = settings['bollinger_timeperiod']
@@ -612,28 +612,28 @@ def prepare_df(df=None,
         ema_slow_timeperiod = settings['ema_slow_timeperiod']
         rsi_buy_value = settings['rsi_buy_value']
         rsi_sell_value = settings['rsi_sell_value']
-        calculate_rsi(result, general_timeperiod, rsi_buy_value, rsi_sell_value)
-        calculate_macd(result, macd_timeperiod, macd_signalperiod)
-        calculate_ema(result, ema_fast_timeperiod, ema_slow_timeperiod)
-        calculate_bollinger_bands(result, bollinger_timeperiod, bollinger_nbdev)
-        calculate_rsi_macd_ratio_and_diff(result)
+        calculate_ml_rsi(result, general_timeperiod, rsi_buy_value, rsi_sell_value)
+        calculate_ml_macd(result, macd_timeperiod, macd_signalperiod)
+        calculate_ml_ema(result, ema_fast_timeperiod, ema_slow_timeperiod)
+        calculate_ml_bollinger_bands(result, bollinger_timeperiod, bollinger_nbdev)
+        calculate_ml_rsi_macd_ratio_and_diff(result)
         
-        calculate_time_patterns(result)
-        find_hammer_patterns(result)
-        find_morning_star_patterns(result)
-        find_bullish_engulfing_patterns(result)
+        calculate_ml_time_patterns(result)
+        find_ml_hammer_patterns(result)
+        find_ml_morning_star_patterns(result)
+        find_ml_bullish_engulfing_patterns(result)
         
         lag_period = settings['lag_period']
         columns_to_calc = ['close', 'volume', f'rsi_{general_timeperiod}']
-        calculate_pct_change_and_lags(result, columns_to_calc, lag_period)
+        calculate_ml_pct_change_and_lags(result, columns_to_calc, lag_period)
         
-        calculate_momentum_signals(result, general_timeperiod)
+        calculate_ml_momentum_signals(result, general_timeperiod)
 
         if training_mode: 
             marker_period = settings['marker_periods']
             
             if regression:
-                add_regression_etiquete(
+                add_ml_regression_etiquete(
                     result, 
                     marker_period
                     )
@@ -641,7 +641,7 @@ def prepare_df(df=None,
             if classification:
                 success_threshold = settings['success_threshold']
                 drop_threshold = settings['drop_threshold']
-                add_classification_etiquete(
+                add_ml_classification_etiquete(
                     result, 
                     marker_period, 
                     success_threshold, 
@@ -657,7 +657,7 @@ def prepare_df(df=None,
             'taker_buy_base_asset_volume', 
             'taker_buy_quote_asset_volume',
             ]
-        handle_final_df_cleaninig(result, columns_to_drop)
+        handle_final_ml_df_cleaninig(result, columns_to_drop)
         
         return result
     

@@ -31,6 +31,7 @@ Last Update:
 
 import sys
 from time import time
+import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -38,9 +39,10 @@ import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
 from utils.app_utils import extract_settings_data
 from utils.api_utils import get_klines
-from utils.df_utils import prepare_df
+from utils.df_utils import prepare_ml_df
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
+from utils.plot_utils import visualise_model_prediction
 
 def predict_xgboost_model():
     """
@@ -89,7 +91,7 @@ def predict_xgboost_model():
     result_marker = settings['result_marker']
     
     log(f"Fetch actual {symbol} {interval} data.")
-    fresh_data_df = get_klines(
+    fetched_df = get_klines(
         symbol=symbol, 
         interval=interval, 
         lookback=lookback
@@ -97,8 +99,8 @@ def predict_xgboost_model():
     log(f"Fetch completed.")
 
     log(f"Prepare DataFrame.")
-    calculated_df = prepare_df(
-        df=fresh_data_df, 
+    calculated_df = prepare_ml_df(
+        df=fetched_df, 
         regression=regression,
         classification=classification,
         settings=settings,
@@ -136,13 +138,15 @@ def predict_xgboost_model():
     log(f"Predictions ({'regression' if regression else 'classification'}):")
     for i, val in enumerate(y_pred[-10:]):
         log(f"Index {len(y_pred) - 10 + i}: {val}")
-
+        
     end_time = time()
 
     log(f"{'regression' if regression else 'classification'} completed.\n"
         f"Prediction based on latest data: {y_pred[-1]}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
     )
+    
+    visualise_model_prediction(y_pred)
 
 if __name__ == "__main__":
     predict_xgboost_model()

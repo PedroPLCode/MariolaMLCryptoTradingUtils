@@ -36,7 +36,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.logger_utils import initialize_logger, log
 from utils.parser_utils import get_parsed_arguments
-from utils.df_utils import prepare_df
+from utils.df_utils import prepare_ml_df
 from utils.app_utils import (
     extract_settings_data, 
     load_data_from_csv,
@@ -102,7 +102,7 @@ def calculate_df():
         f"Regression: {regression}\n"
         f"Classification: {classification}"
         )
-    result_df = prepare_df(
+    result_df = prepare_ml_df(
         df=data_df, 
         regression=regression,
         classification=classification,

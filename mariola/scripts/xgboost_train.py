@@ -32,7 +32,6 @@ Last Update:
 import sys
 from time import time
 import numpy as np
-import matplotlib.pyplot as plt
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from sklearn.model_selection import train_test_split
@@ -41,6 +40,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
+from utils.plot_utils import visualise_model_performance
 from utils.app_utils import (
     extract_settings_data, 
     load_data_from_csv
@@ -110,7 +110,12 @@ def train_xgboost_model():
     log(f"Data preparation completed.")
 
     log(f"Splitting the data into training and testing sets.")
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, 
+        y, 
+        test_size=test_size, 
+        random_state=random_state
+        )
     log(f"Data split completed.")
 
     log(f"Handle missing or infinite values in training and testing sets.")
@@ -165,16 +170,10 @@ def train_xgboost_model():
     log(f'Mean Squared Error: {mse}')
     log(f'R-squared: {r2}')
 
-    plt.scatter(y_test, y_pred)
-    plt.xlabel('Actual')
-    plt.ylabel('Predicted')
-    plt.title('Actual vs Predicted')
-    plt.show()
-
     model_filename = data_filename.replace('df_', 'model_').replace('_calculated', '_xgboost').replace('csv', 'model')
     model.save_model(model_filename)
     log(f"Model saved as {model_filename}")
-
+    
     end_time = time()
 
     log(f"XGBoost Model training completed.\n"
@@ -182,5 +181,13 @@ def train_xgboost_model():
         f"Time taken: {end_time - start_time:.2f} seconds"
         )
 
+    visualise_model_performance(
+        y_test, 
+        y_pred, 
+        result_marker, 
+        regression, 
+        classification
+        )
+    
 if __name__ == "__main__":
     train_xgboost_model()

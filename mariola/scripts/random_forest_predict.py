@@ -30,7 +30,6 @@ Last Update:
 import sys
 import joblib
 import numpy as np
-import matplotlib.pyplot as plt
 from time import time
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -38,8 +37,9 @@ from sklearn.preprocessing import StandardScaler
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
 from utils.api_utils import get_klines
-from utils.df_utils import prepare_df
+from utils.df_utils import prepare_ml_df
 from utils.app_utils import extract_settings_data
+from utils.plot_utils import visualise_model_prediction
 
 def predict_with_rf_model():
     """
@@ -93,10 +93,10 @@ def predict_with_rf_model():
     log(f"Fetching actual {symbol} {interval} data.")
     fetched_df = get_klines(symbol=symbol, interval=interval, lookback=lookback)
     log(f"Data fetched. "
-        f"Symbol: {symbol}, Interval: {interval}, Lookback: {lookback}, Data length: {len(df)}")
+        f"Symbol: {symbol}, Interval: {interval}, Lookback: {lookback}, Data length: {len(fetched_df)}")
 
     log(f"Preparing DataFrame for prediction.")
-    calculated_df = prepare_df(
+    calculated_df = prepare_ml_df(
         df=fetched_df, 
         regression=regression,
         classification=classification,
@@ -115,26 +115,20 @@ def predict_with_rf_model():
     X_new = np.nan_to_num(X_new, nan=0.0, posinf=0.0, neginf=0.0)
     scaler = StandardScaler()
     X_new = scaler.fit_transform(X_new)
-    predictions = model.predict(X_new)
+    y_pred = model.predict(X_new)
     
     log(f"Predictions made. First 10 predictions:")
-    for idx, pred in enumerate(predictions[:10]):
+    for idx, pred in enumerate(y_pred[:10]):
         log(f"Prediction {idx + 1}: {pred:.4f}")
-
-    log("Visualizing predictions.")
-    plt.plot(predictions, label='Predictions', color='orange')
-    plt.title('Predictions for New Data')
-    plt.xlabel('Index')
-    plt.ylabel('Prediction Value')
-    plt.legend()
-    plt.show()
-
+        
     end_time = time()
     
     log(f"{'Regression' if regression else 'Classification'} completed.\n"
-        f"Prediction based on latest data: {predictions[-1]}\n"
+        f"Prediction based on latest data: {y_pred[-1]}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
         )
+    
+    visualise_model_prediction(y_pred)
 
 if __name__ == "__main__":
     predict_with_rf_model()

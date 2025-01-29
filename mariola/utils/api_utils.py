@@ -169,6 +169,7 @@ def get_full_historical_klines(
     """
     
     try:
+        
         all_klines = []
         binance_client = create_binance_client()
         
@@ -215,7 +216,8 @@ def get_full_historical_klines(
         log(f"Total candles from start date: {total_candles}")
 
         candles_per_iteration = 1000
-        total_iterations = (total_candles // candles_per_iteration) + (1 if total_candles % candles_per_iteration else 0)
+        total_iterations = (total_candles // candles_per_iteration) + \
+            (1 if total_candles % candles_per_iteration else 0)
         log(f"Total iterations required: {total_iterations}")
 
         iteration = 0

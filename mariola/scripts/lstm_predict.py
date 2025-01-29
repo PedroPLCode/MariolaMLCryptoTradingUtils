@@ -39,9 +39,10 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 from tensorflow.keras.models import load_model
 from utils.app_utils import extract_settings_data
 from utils.api_utils import get_klines
-from utils.df_utils import prepare_df
+from utils.df_utils import prepare_ml_df
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
+from utils.plot_utils import visualise_model_prediction
 from utils.ml_utils import (
     normalize_df, 
     handle_pca, 
@@ -102,7 +103,7 @@ def predict_lstm_model():
     window_lookback=settings_data['settings']['window_lookback']
 
     log(f"Fetch actual {symbol} {interval} data.")
-    fresh_data_df = get_klines(
+    fetched_df = get_klines(
         symbol=symbol, 
         interval=interval, 
         lookback=lookback,
@@ -111,7 +112,7 @@ def predict_lstm_model():
         f"symbol: {symbol}\n"
         f"interval: {interval}\n"
         f"lookback: {lookback}\n"
-        f"len(data_df): {len(fresh_data_df)}"
+        f"len(data_df): {len(fetched_df)}"
         )
 
     log(f"Prepare DataFrame.\n"
@@ -119,8 +120,8 @@ def predict_lstm_model():
         f"regression: {regression}\n"
         f"classification: {classification}"
         )
-    calculated_df = prepare_df(
-        df=fresh_data_df, 
+    calculated_df = prepare_ml_df(
+        df=fetched_df, 
         regression=regression,
         classification=classification,
         settings=settings,
@@ -186,6 +187,8 @@ def predict_lstm_model():
         f"Prediction based on latest data: {y_pred[-1]}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
         )
+    
+    visualise_model_prediction(y_pred)
     
 if __name__ == "__main__":
     predict_lstm_model()

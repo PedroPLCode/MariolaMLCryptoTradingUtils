@@ -31,7 +31,6 @@ Last Update:
 import sys
 import joblib
 import numpy as np
-import matplotlib.pyplot as plt
 from time import time
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -42,6 +41,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
+from utils.plot_utils import visualise_model_performance
 from utils.app_utils import (
     extract_settings_data,
     load_data_from_csv,
@@ -152,17 +152,21 @@ def train_rf_model():
                                    .replace('.csv', '.joblib')
     joblib.dump(model, model_filename)
     log(f"Model saved as {model_filename}")
-
-    log("Visualizing target distribution.")
-    plt.hist(y, bins=50, alpha=0.7, color='blue')
-    plt.title('Distribution of Target Variable')
-    plt.xlabel(result_marker)
-    plt.ylabel('Frequency')
-    plt.show()
-
+    
     end_time = time()
-    log(f"Training process completed in {end_time - start_time:.2f} "
-        f"seconds.")
 
+    log(f"Random Forest Model training completed.\n"
+        f"{'Regression' if regression else 'Classification'}\n"
+        f"Time taken: {end_time - start_time:.2f} seconds"
+        )
+
+    visualise_model_performance(
+        y_test, 
+        y_pred, 
+        result_marker, 
+        regression, 
+        classification
+        )
+    
 if __name__ == "__main__":
     train_rf_model()
