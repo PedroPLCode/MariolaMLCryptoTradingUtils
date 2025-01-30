@@ -27,7 +27,6 @@ def save_data_to_csv(data, filename):
         return None
         
     try:
-        
         data.to_csv(filename, index=False)
         log(f"Klines data saved to {filename}")
         
@@ -60,7 +59,6 @@ def load_data_from_csv(filename):
         return None
     
     try:
-        
         df = pd.read_csv(filename)
         log(f"Klines data loaded from {filename}")
         
@@ -89,7 +87,6 @@ def save_df_info(df, filename):
         - The last 3 rows of the DataFrame without the index.
     """
     try:
-    
         if df is None or df.empty or not filename:
             raise ValueError("df and filename must be provided and cannot be None.")
         
@@ -129,7 +126,6 @@ def extract_settings_data(settings_filename):
         Exception: For any other unexpected errors.
     """
     try:
-        
         with open(settings_filename, 'r') as f:
             settings_data = json.load(f)
             
@@ -167,7 +163,6 @@ def save_dataframe_with_info(dataframe, base_filename, stage_name):
     Data saved to data_normalized.csv.
     """
     try:
-        
         csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
         info_filename = csv_filename.replace('csv', 'info')
         save_df_info(dataframe, info_filename)

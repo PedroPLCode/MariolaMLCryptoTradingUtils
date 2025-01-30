@@ -38,7 +38,6 @@ def normalize_df(df=None,
         normalized_df = normalize_df(df, training_mode=True, result_marker='target')
     """
     try:
-        
         if df is None or df.empty:
             raise ValueError("df must be provided and cannot be None.")
         
@@ -95,7 +94,6 @@ def handle_pca(df_normalized=None,
         The PCA transformation reduces the features to the specified number of components (`n_components=50`).
     """
     try:
-        
         if df_normalized is None or df_normalized.empty:
             raise ValueError("df_normalized must be provided and cannot be None.")
         
@@ -146,7 +144,6 @@ def create_sequences(df_reduced=None,
         X = create_sequences(df_reduced, lookback=14, window_size=30, result_marker='marker_column', training_mode=False)
     """
     try:
-        
         if (
             df_reduced is None or
             lookback is None or

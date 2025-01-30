@@ -18,7 +18,6 @@ def visualise_model_prediction(y_pred):
         visualise_prediction(predictions)
     """
     try:
-        
         log("Visualizing predictions.")
         plt.plot(y_pred, label='Predictions', color='orange')
         plt.title('Predictions for New Data')
@@ -62,7 +61,6 @@ def visualise_model_performance(
         visualise_training_results(y_test, y_pred, 'Price', True, False)
     """
     try:
-        
         log("Visualizing target distribution.")
         plt.figure(figsize=(10, 6))
         plt.hist(y_pred, bins=50, alpha=0.7, color='blue')
@@ -106,7 +104,6 @@ def plot_regression_performance(y_test, y_pred):
         plot_regression(y_test, y_pred)
     """
     try:
-        
         plt.figure(figsize=(10, 6))
         plt.scatter(y_test, y_pred, alpha=0.7, color='green')
         plt.plot(
@@ -156,7 +153,6 @@ def plot_classification_performance(y_test, y_pred):
     import seaborn as sns
     
     try:
-        
         cm = confusion_matrix(y_test, y_pred)
         plt.figure(figsize=(8, 6))
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False)

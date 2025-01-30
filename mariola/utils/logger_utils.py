@@ -27,7 +27,6 @@ def initialize_logger(settings_filename):
     global log_filename
     
     try:
-        
         with open(settings_filename, 'r') as f:
             settings_data = json.load(f)
             log_filename = settings_data['settings']['log_filename']
@@ -61,7 +60,6 @@ def log(message):
         None
     """
     try:
-        
         if log_filename is None:
             raise RuntimeError("Logger has not been initialized. Call initialize_logger() first.")
         

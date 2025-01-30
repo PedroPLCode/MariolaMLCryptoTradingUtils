@@ -29,7 +29,6 @@ def find_ml_hammer_patterns(df):
         Exception: If any error occurs during the pattern identification process.
     """
     try:
-        
         if df is None or df.empty:
             raise ValueError("df must be provided and cannot be None or empty.")
         
@@ -76,7 +75,6 @@ def find_ml_morning_star_patterns(df):
         Exception: If any error occurs during the pattern identification process.
     """
     try:
-        
         if df is None or df.empty:
             raise ValueError("df must be provided and cannot be None or empty.")
         
@@ -123,7 +121,6 @@ def find_ml_bullish_engulfing_patterns(df):
         Exception: If any error occurs during the pattern identification process.
     """
     try:
-        
         if df is None or df.empty:
             raise ValueError("df must be provided and cannot be None or empty.")
         
@@ -169,7 +166,6 @@ def calculate_ml_pct_change_and_lags(df, column_names_list, lag_period):
         Exception: If an error occurs during the calculation of percentage change or lag features for any column.
     """
     try:
-        
         for column_name in column_names_list:
         
             df[f'{column_name}_pct_change'] = df[f'{column_name}'].pct_change() * 100
@@ -199,7 +195,6 @@ def calculate_ml_momentum_signals(df, general_timeperiod):
                                    Returns None if an error occurs during the calculation.
     """
     try:
-        
         df['is_support'] = df['close'] == df['close'].rolling(window=general_timeperiod).min()
         df['is_resistance'] = df['close'] == df['close'].rolling(window=general_timeperiod).max()
 
@@ -233,7 +228,6 @@ def calculate_ml_rsi(df, general_timeperiod, rsi_buy_value, rsi_sell_value):
                                    Returns None if an error occurs during the calculation.
     """
     try:
-        
         df[f'rsi_{general_timeperiod}'] = talib.RSI(
             df['close'], 
             timeperiod=general_timeperiod
@@ -266,7 +260,6 @@ def calculate_ml_ema(df, ema_fast_timeperiod, ema_slow_timeperiod):
                                    Returns None if an error occurs during the calculation.
     """
     try:
-        
         df[f'ema_{ema_fast_timeperiod}'] = talib.EMA(
             df['close'], 
             timeperiod=ema_fast_timeperiod
@@ -304,7 +297,6 @@ def calculate_ml_macd(df, macd_timeperiod, macd_signalperiod):
                                    Returns None if an error occurs during the calculation.
     """
     try:
-        
         df[f'macd_{macd_timeperiod}'], df[f'macd_signal_{macd_signalperiod}'], _ = talib.MACD(
             df['close'], 
             fastperiod=macd_timeperiod, 
@@ -342,7 +334,6 @@ def calculate_ml_bollinger_bands(df, bollinger_timeperiod, bollinger_nbdev):
                                    Returns None if an error occurs during the calculation.
     """
     try:
-        
         df['upper_band'], df['middle_band'], df['lower_band'] = talib.BBANDS(
             df['close'],
             timeperiod=bollinger_timeperiod,
@@ -379,7 +370,6 @@ def calculate_ml_time_patterns(df):
                                    Returns None if an error occurs during the calculation.
     """
     try:
-        
         df['close_time'] = pd.to_datetime(df['close_time'], unit='ms')
         
         df['close_time_hour'] = df['close_time'].dt.hour
@@ -420,7 +410,6 @@ def calculate_ml_rsi_macd_ratio_and_diff(df):
         df = preprocess_df_for_random_forest(df)
     """
     try:
-        
         epsilon = 1e-10
         df['rsi_macd_ratio'] = df['rsi_14'] / (df['macd_histogram_12'] + epsilon)
         df['macd_signal_diff'] = df['macd_signal_9'] - df['macd_histogram_12']
@@ -453,7 +442,6 @@ def handle_initial_ml_df_preparaition(df):
         None: All exceptions are handled and logged internally.
     """
     try:
-        
         df['open'] = pd.to_numeric(df['open'], errors='coerce')
         df['low'] = pd.to_numeric(df['low'], errors='coerce')
         df['high'] = pd.to_numeric(df['high'], errors='coerce')
@@ -487,7 +475,6 @@ def add_ml_regression_etiquete(df, marker_period):
         None: All exceptions are handled and logged internally.
     """
     try:
-            
         df[f'marker_close_pct_change_in_next_{marker_period}_periods'] = \
             ((df['close'].shift(-marker_period) - df['close']) / df['close'] * 100)
                 
@@ -524,7 +511,6 @@ def add_ml_classification_etiquete(df, marker_period, success_threshold, drop_th
         None: All exceptions are handled and logged internally.
     """
     try:
-                    
         df[f'marker_close_trade_success_in_next_{marker_period}_periods'] = (
             ((df[f'max_close_in_{marker_period}'] - df['close']) / \
                 df['close'] * 100 >= success_threshold) & 
@@ -559,7 +545,6 @@ def handle_final_ml_df_cleaninig(df, columns_to_drop):
         None: All exceptions are handled and logged internally.
     """
     try:
-        
         df.drop(columns=columns_to_drop, inplace=True)
         df.fillna(0, inplace=True)
         df[df.select_dtypes(include=['bool']).columns] = \
@@ -595,7 +580,6 @@ def prepare_ml_df(df=None,
         raise ValueError("settings must be provided and cannot be None or empty.")
     
     try:
-        
         if df is None or df.empty:
             raise ValueError("df must be provided and cannot be None or empty.")
         

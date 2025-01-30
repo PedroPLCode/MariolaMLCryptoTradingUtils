@@ -20,7 +20,6 @@ def get_parsed_arguments(first_arg_string, second_arg_string=None):
         tuple: A tuple containing the parsed values of the arguments. The second argument is None if not provided.
     """
     try:
-        
         parser = argparse.ArgumentParser(description="A script that accepts one or two arguments.")
         parser.add_argument(
             'first_argument',
