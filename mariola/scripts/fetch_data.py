@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Fetching Historical Data
+MariolaMLCryptoTradingUtils - Fetching Historical Data
 
 This script is responsible for fetching historical cryptocurrency data from an API, 
 saving it as CSV files, and logging the process. The script uses a settings file to define 

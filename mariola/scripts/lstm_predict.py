@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Predicting with LSTM Model
+MariolaMLCryptoTradingUtils - Predicting with LSTM Model
 
 This script is responsible for making predictions using a pre-trained LSTM model. 
 It takes settings and model filenames as inputs, fetches data from Binance, processes it 

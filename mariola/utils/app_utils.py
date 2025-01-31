@@ -1,7 +1,9 @@
 import json
 import pandas as pd
 from utils.logger_utils import log
+from utils.exception_handler import exception_handler
 
+@exception_handler()
 def save_data_to_csv(data, filename):
     """
     Saves the provided data to a CSV file.
@@ -21,20 +23,15 @@ def save_data_to_csv(data, filename):
         >>> save_data_to_csv(df, 'data.csv')
         Klines data saved to data.csv
     """
-    
     if data is None:
         log(f"Error in save_data_to_csv. data id None.\n{data}")
         return None
         
-    try:
-        data.to_csv(filename, index=False)
-        log(f"Klines data saved to {filename}")
-        
-    except Exception as e:
-        log(e)
-        return None
+    data.to_csv(filename, index=False)
+    log(f"Klines data saved to {filename}")
 
 
+@exception_handler()
 def load_data_from_csv(filename):
     """
     Loads data from a CSV file into a pandas DataFrame.
@@ -53,22 +50,17 @@ def load_data_from_csv(filename):
         >>> df = load_data_from_csv('data.csv')
         Klines data loaded from data.csv
     """
-    
     if not filename:
         log("Error in load_data_from_csv. Filemane not provided")
         return None
     
-    try:
-        df = pd.read_csv(filename)
-        log(f"Klines data loaded from {filename}")
+    df = pd.read_csv(filename)
+    log(f"Klines data loaded from {filename}")
         
-        return df
-    
-    except Exception as e:
-        log(e)
-        return None
+    return df
 
 
+@exception_handler()
 def save_df_info(df, filename):
     """
     Saves basic information and the last 3 rows of a pandas DataFrame to a file.
@@ -86,26 +78,22 @@ def save_df_info(df, filename):
         - The number of columns in the DataFrame.
         - The last 3 rows of the DataFrame without the index.
     """
-    try:
-        if df is None or df.empty or not filename:
-            raise ValueError("df and filename must be provided and cannot be None.")
-        
-        with open(filename, 'w') as f:
-            f.write("Pandas DataFrame:\n")
-            f.write(str(df.columns) + "\n\n")
-            f.write("Number of Columns:\n")
-            f.write(str(len(df.columns)) + "\n\n")
-            f.write("Number of Rows:\n")
-            f.write(str(len(df)) + "\n\n")
-            f.write("Last 3 rows:\n")
-            f.write(df.tail(3).to_string(index=False))
-            log(f"DataFrame saved to {filename}")
-            
-    except Exception as e:
-        log(e)
-        return None
+    if df is None or df.empty or not filename:
+        raise ValueError("df and filename must be provided and cannot be None.")
     
+    with open(filename, 'w') as f:
+        f.write("Pandas DataFrame:\n")
+        f.write(str(df.columns) + "\n\n")
+        f.write("Number of Columns:\n")
+        f.write(str(len(df.columns)) + "\n\n")
+        f.write("Number of Rows:\n")
+        f.write(str(len(df)) + "\n\n")
+        f.write("Last 3 rows:\n")
+        f.write(df.tail(3).to_string(index=False))
+        log(f"DataFrame saved to {filename}")
+
     
+@exception_handler(default_return=exit(1))    
 def extract_settings_data(settings_filename):
     """
     Extracts and returns settings data from a JSON file.
@@ -125,25 +113,15 @@ def extract_settings_data(settings_filename):
         json.JSONDecodeError: If the file is not a valid JSON format.
         Exception: For any other unexpected errors.
     """
-    try:
-        with open(settings_filename, 'r') as f:
-            settings_data = json.load(f)
-            
-        log(f"Successfully loaded settings from {settings_filename}")
+    with open(settings_filename, 'r') as f:
+        settings_data = json.load(f)
         
-        return settings_data
+    log(f"Successfully loaded settings from {settings_filename}")
     
-    except FileNotFoundError:
-        log(f"Error: File {settings_filename} not found.")
-        exit(1)
-    except json.JSONDecodeError:
-        log(f"Error: File {settings_filename} is not a valid JSON.")
-        exit(1)
-    except Exception as e:
-        log(f"Unexpected error loading file {settings_filename}: {e}")
-        exit(1)
+    return settings_data
+
         
-        
+@exception_handler()        
 def save_dataframe_with_info(dataframe, base_filename, stage_name):
     """
     Saves a DataFrame to a CSV file and logs information about the saved data.
@@ -162,12 +140,7 @@ def save_dataframe_with_info(dataframe, base_filename, stage_name):
     >>> save_dataframe_with_info(df, 'data_calculated.csv', 'normalized')
     Data saved to data_normalized.csv.
     """
-    try:
-        csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
-        info_filename = csv_filename.replace('csv', 'info')
-        save_df_info(dataframe, info_filename)
-        log(f"{stage_name.capitalize()} data saved to {csv_filename}.")
-        
-    except Exception as e:
-        log(e)
-        return None
+    csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
+    info_filename = csv_filename.replace('csv', 'info')
+    save_df_info(dataframe, info_filename)
+    log(f"{stage_name.capitalize()} data saved to {csv_filename}.")

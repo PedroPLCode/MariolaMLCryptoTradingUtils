@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Training Random Forest Model
+MariolaMLCryptoTradingUtils - Training Random Forest Model
 
 This script is responsible for training a Random Forest model (regression or classification) 
 using prepared data. The process includes loading CSV files with data and configuration, 

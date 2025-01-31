@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Prediction Using Trained Random Forest Model
+MariolaMLCryptoTradingUtils - Prediction Using Trained Random Forest Model
 
 This script is responsible for making predictions using a pre-trained Random Forest model 
 on new data. The process includes loading the trained model from a `.joblib` file, fetching 

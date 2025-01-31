@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - DataFrame Calculation
+MariolaMLCryptoTradingUtils - DataFrame Calculation
 
 This script provides functionality for calculating technical analysis parameters 
 from historical cryptocurrency data fetched via Binance API. 

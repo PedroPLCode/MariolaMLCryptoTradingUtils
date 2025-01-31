@@ -1,6 +1,6 @@
-# MariolaCryptoTradingBot
+# MariolaMLCryptoTradingUtils
 
-MariolaCryptoTradingBot is a collection of powerful scripts designed for training and optimizing trading models to be later used in the main trading bot, [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot). Born from the rib of StefanCryptoTradingBot, this project focuses on developing machine learning models that predict cryptocurrency market trends, which can be integrated into the trading system for real-time autonomous decision-making.
+MariolaMLCryptoTradingUtils is a collection of powerful scripts designed for training and optimizing trading models to be later used in the main trading bot, [StefanCryptoTradingBot](https://github.com/PedroPLCode/StefanCryptoTradingBot). Born from the rib of StefanCryptoTradingBot, this project focuses on developing machine learning models that predict cryptocurrency market trends, which can be integrated into the trading system for real-time autonomous decision-making.
 The models can be used in real-time applications, such as trading bots. This repository includes scripts for fetching historical data, training models (LSTM, Random Forest, XGBoost), and making predictions based on these trained models.
 
 ## Features
@@ -39,8 +39,8 @@ To install and set up the bot locally, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/MariolaCryptoTradingBot.git
-cd MariolaCryptoTradingBot
+git clone https://github.com/yourusername/MariolaMLCryptoTradingUtils.git
+cd MariolaMLCryptoTradingUtils
 ```
 
 2. Set up a Python virtual environment and activate it:
@@ -76,4 +76,4 @@ Familiarize yourself thoroughly with the source code. Understand its operation. 
 Code created by me, with no small contribution from Dr. Google and Mr. ChatGPT.
 Any comments welcome.
 
-MariolaCryptoTradingBot Project is under GNU General Public License Version 3, 29 June 2007
+MariolaMLCryptoTradingUtils Project is under GNU General Public License Version 3, 29 June 2007

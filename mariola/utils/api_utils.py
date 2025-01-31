@@ -3,12 +3,13 @@ from datetime import datetime as dt, timedelta
 import time
 import pandas as pd
 from binance.client import Client
-from binance.exceptions import BinanceAPIException
 import os
 from utils.logger_utils import log
+from utils.exception_handler import exception_handler
 
 load_dotenv()
 
+@exception_handler()
 def create_binance_client():
     """
     Creates and returns a Binance client using API keys from environment variables.
@@ -21,19 +22,14 @@ def create_binance_client():
         (`BINANCE_GENERAL_API_KEY` and `BINANCE_GENERAL_API_SECRET`), and initializes a 
         Binance client using the `Client` class from the `binance` library.
     """
+    api_key = os.environ.get('BINANCE_GENERAL_API_KEY')
+    api_secret = os.environ.get('BINANCE_GENERAL_API_SECRET')
+    binance_client = Client(api_key, api_secret)
     
-    try:
-        api_key = os.environ.get('BINANCE_GENERAL_API_KEY')
-        api_secret = os.environ.get('BINANCE_GENERAL_API_SECRET')
-        binance_client = Client(api_key, api_secret)
-        
-        return binance_client
-    
-    except Exception as e:
-        log(e)
-        return None
+    return binance_client
 
 
+@exception_handler()
 def get_klines(
     symbol='BTCUSDC', 
     interval='1h', 
@@ -70,70 +66,53 @@ def get_klines(
           the start time and fetch data from there.
         - The function supports lookback periods in hours ('h'), days ('d'), and minutes ('m').
     """
-    
-    try: 
-        binance_client = create_binance_client()
-        klines = None
-        if not start_str and not end_str:
-            if lookback[-1] == 'h':
-                hours = int(lookback[:-1])
-                start_time = dt.utcnow() - timedelta(hours=hours)
-            elif lookback[-1] == 'd':
-                days = int(lookback[:-1])
-                start_time = dt.utcnow() - timedelta(days=days)
-            elif lookback[-1] == 'm':
-                minutes = int(lookback[:-1])
-                start_time = dt.utcnow() - timedelta(minutes=minutes)
-            else:
-                raise ValueError("Unsupported lookback period format.")
-            
-            start_str = start_time.strftime('%Y-%m-%d %H:%M:%S')
-            
-            klines = binance_client.get_historical_klines(
-                symbol=symbol, 
-                interval=interval, 
-                start_str=start_str
-            )
+    binance_client = create_binance_client()
+    klines = None
+    if not start_str and not end_str:
+        if lookback[-1] == 'h':
+            hours = int(lookback[:-1])
+            start_time = dt.utcnow() - timedelta(hours=hours)
+        elif lookback[-1] == 'd':
+            days = int(lookback[:-1])
+            start_time = dt.utcnow() - timedelta(days=days)
+        elif lookback[-1] == 'm':
+            minutes = int(lookback[:-1])
+            start_time = dt.utcnow() - timedelta(minutes=minutes)
         else:
-            klines = binance_client.get_historical_klines(
-                symbol=symbol, 
-                interval=interval, 
-                start_str=str(start_str), 
-                end_str=str(end_str)
-            )
+            raise ValueError("Unsupported lookback period format.")
         
-        df = pd.DataFrame(
-            klines, 
-            columns=[
-                'open_time', 'open', 'high', 'low', 'close', 'volume', 
-                'close_time', 'quote_asset_volume', 'number_of_trades', 
-                'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 
-                'ignore'
-            ]
+        start_str = start_time.strftime('%Y-%m-%d %H:%M:%S')
+        
+        klines = binance_client.get_historical_klines(
+            symbol=symbol, 
+            interval=interval, 
+            start_str=start_str
         )
-        df['close'] = df['close'].astype(float)
-        df['high'] = df['high'].astype(float)
-        df['low'] = df['low'].astype(float)
-        
-        return df
+    else:
+        klines = binance_client.get_historical_klines(
+            symbol=symbol, 
+            interval=interval, 
+            start_str=str(start_str), 
+            end_str=str(end_str)
+        )
     
-    except BinanceAPIException as e:
-        log(f"Binance API Exception: {e}")
-        return None
-    except ConnectionError as e:
-        log(f"Connection Error: {e}")
-        return None
-    except TimeoutError as e:
-        log(f"Timeout Error: {e}")
-        return None
-    except ValueError as e:
-        log(f"Value Error: {e}")
-        return None
-    except Exception as e:
-        log(f"General Error: {e}")
-        return None
+    df = pd.DataFrame(
+        klines, 
+        columns=[
+            'open_time', 'open', 'high', 'low', 'close', 'volume', 
+            'close_time', 'quote_asset_volume', 'number_of_trades', 
+            'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 
+            'ignore'
+        ]
+    )
+    df['close'] = df['close'].astype(float)
+    df['high'] = df['high'].astype(float)
+    df['low'] = df['low'].astype(float)
     
+    return df
+
     
+@exception_handler()
 def get_full_historical_klines(
     symbol='BTCUSDC', 
     interval='1h', 
@@ -165,109 +144,91 @@ def get_full_historical_klines(
         - ValueError: Value error.
         - Other exceptions: General exception.
     """
+    all_klines = []
+    binance_client = create_binance_client()
     
-    try:
-        all_klines = []
-        binance_client = create_binance_client()
-        
-        if isinstance(start_str, int):
-            start_str = str(start_str)
-        if isinstance(start_str, str):
-            start_date = dt.strptime(start_str, "%d %b, %Y")
-            start_str = str(int(start_date.timestamp() * 1000))
-        
-        timestamp = int(start_str) / 1000
-        start_date = dt.utcfromtimestamp(timestamp)
-        log(f"Ready to fetch all {symbol} {interval} klines data. start_str: {start_date}")
+    if isinstance(start_str, int):
+        start_str = str(start_str)
+    if isinstance(start_str, str):
+        start_date = dt.strptime(start_str, "%d %b, %Y")
+        start_str = str(int(start_date.timestamp() * 1000))
+    
+    timestamp = int(start_str) / 1000
+    start_date = dt.utcfromtimestamp(timestamp)
+    log(f"Ready to fetch all {symbol} {interval} klines data. start_str: {start_date}")
 
-        klines_count = binance_client.get_historical_klines(
+    klines_count = binance_client.get_historical_klines(
+        symbol=symbol,
+        interval=interval,
+        start_str=start_str,
+        limit=1
+    )
+
+    if klines_count:
+        first_kline_timestamp = klines_count[0][0]
+        first_kline_date = dt.utcfromtimestamp(first_kline_timestamp / 1000)
+        log(f"First available kline timestamp: {first_kline_timestamp}, "
+            f"corresponding to {first_kline_date}")
+    else:
+        log("No data available.")
+        return None
+
+    now = dt.now()
+    delta = now - start_date
+    
+    total_candles = None
+    if interval == '1h':
+        total_candles = delta.total_seconds() / 3600
+    elif interval == '30m':
+        total_candles = delta.total_seconds() / 1800
+    elif interval == '15m':
+        total_candles = delta.total_seconds() / 900
+    else:
+        log(f"Error. Wrong start date: {start_date} or delta: {delta}")
+        return
+    
+    log(f"Total candles from start date: {total_candles}")
+
+    candles_per_iteration = 1000
+    total_iterations = (total_candles // candles_per_iteration) + \
+        (1 if total_candles % candles_per_iteration else 0)
+    log(f"Total iterations required: {total_iterations}")
+
+    iteration = 0
+    while iteration < total_iterations:
+        iteration += 1
+        log(f"Fetching iteration {iteration}/{total_iterations} - {symbol} {interval} klines data.")
+        klines = binance_client.get_historical_klines(
             symbol=symbol,
             interval=interval,
             start_str=start_str,
-            limit=1
+            limit=candles_per_iteration
         )
-
-        if klines_count:
-            first_kline_timestamp = klines_count[0][0]
-            first_kline_date = dt.utcfromtimestamp(first_kline_timestamp / 1000)
-            log(f"First available kline timestamp: {first_kline_timestamp}, "
-                f"corresponding to {first_kline_date}")
-        else:
-            log("No data available.")
-            return None
-
-        now = dt.now()
-        delta = now - start_date
         
-        total_candles = None
-        if interval == '1h':
-            total_candles = delta.total_seconds() / 3600
-        elif interval == '30m':
-            total_candles = delta.total_seconds() / 1800
-        elif interval == '15m':
-            total_candles = delta.total_seconds() / 900
-        else:
-            log(f"Error. Wrong start date: {start_date} or delta: {delta}")
-            return
+        if not klines:
+            break
         
-        log(f"Total candles from start date: {total_candles}")
+        all_klines.extend(klines)
 
-        candles_per_iteration = 1000
-        total_iterations = (total_candles // candles_per_iteration) + \
-            (1 if total_candles % candles_per_iteration else 0)
-        log(f"Total iterations required: {total_iterations}")
+        start_str = klines[-1][0]
+        start_str_date = dt.utcfromtimestamp(start_str / 1000)
+        log(f"Fetch loop completed. Next start_str: {start_str_date}")
 
-        iteration = 0
-        while iteration < total_iterations:
-            iteration += 1
-            log(f"Fetching iteration {iteration}/{total_iterations} - {symbol} {interval} klines data.")
-            klines = binance_client.get_historical_klines(
-                symbol=symbol,
-                interval=interval,
-                start_str=start_str,
-                limit=candles_per_iteration
-            )
-            
-            if not klines:
-                break
-            
-            all_klines.extend(klines)
-
-            start_str = klines[-1][0]
-            start_str_date = dt.utcfromtimestamp(start_str / 1000)
-            log(f"Fetch loop completed. Next start_str: {start_str_date}")
-
-            log(f"Progress: {iteration}/{total_iterations} iterations completed")
-            time.sleep(0.1)
-        
-        df = pd.DataFrame(
-            all_klines, 
-            columns=[
-                'open_time', 'open', 'high', 'low', 'close', 'volume', 
-                'close_time', 'quote_asset_volume', 'number_of_trades', 
-                'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 
-                'ignore'
-            ]
-        )
-        df['close'] = df['close'].astype(float)
-        df['high'] = df['high'].astype(float)
-        df['low'] = df['low'].astype(float)
-        
-        log(f"All {symbol} {interval} klines data fetched successfully.")
-        return df
-        
-    except BinanceAPIException as e:
-        log(f"Binance API Exception: {e}")
-        return None
-    except ConnectionError as e:
-        log(f"Connection Error: {e}")
-        return None
-    except TimeoutError as e:
-        log(f"Timeout Error: {e}")
-        return None
-    except ValueError as e:
-        log(f"Value Error: {e}")
-        return None
-    except Exception as e:
-        log(f"General Error: {e}")
-        return None
+        log(f"Progress: {iteration}/{total_iterations} iterations completed")
+        time.sleep(0.1)
+    
+    df = pd.DataFrame(
+        all_klines, 
+        columns=[
+            'open_time', 'open', 'high', 'low', 'close', 'volume', 
+            'close_time', 'quote_asset_volume', 'number_of_trades', 
+            'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 
+            'ignore'
+        ]
+    )
+    df['close'] = df['close'].astype(float)
+    df['high'] = df['high'].astype(float)
+    df['low'] = df['low'].astype(float)
+    
+    log(f"All {symbol} {interval} klines data fetched successfully.")
+    return df

@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Predicting with XGBoost Model
+MariolaMLCryptoTradingUtils - Predicting with XGBoost Model
 
 This script is responsible for making predictions using a pre-trained XGBoost model.
 The process includes loading settings and the model, fetching and preparing data,

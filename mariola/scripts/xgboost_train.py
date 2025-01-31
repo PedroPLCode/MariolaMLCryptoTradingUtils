@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Training XGBoost Model
+MariolaMLCryptoTradingUtils - Training XGBoost Model
 
 This script is responsible for training an XGBoost model (regression or classification) 
 using prepared data. The process includes loading CSV files with data and configuration, 

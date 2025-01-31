@@ -1,5 +1,5 @@
 """
-MariolaCryptoTradingBot - Training LSTM Model
+MariolaMLCryptoTradingUtils - Training LSTM Model
 
 This script is responsible for training an LSTM model (regression or classification) 
 using prepared data. The process includes loading CSV files with data and configuration, 
