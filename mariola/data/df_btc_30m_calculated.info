@@ -1,0 +1,30 @@
+Pandas DataFrame:
+Index(['open', 'high', 'low', 'close', 'volume', 'rsi_14', 'rsi_14_buy_signal',
+       'rsi_14_sell_signal', 'macd_12', 'macd_signal_9', 'macd_histogram_12',
+       'macd_buy_signal', 'macd_sell_signal', 'ema_9', 'ema_21',
+       'ema_buy_signal', 'ema_sell_signal', 'upper_band', 'middle_band',
+       'lower_band', 'bollinger_buy_signal', 'bollinger_sell_signal',
+       'rsi_macd_ratio', 'macd_signal_diff', 'close_time_hour',
+       'close_time_weekday', 'close_time_month', 'hour_sin', 'hour_cos',
+       'weekday_sin', 'weekday_cos', 'month_sin', 'month_cos', 'is_weekend',
+       'hammer', 'is_hammer_morning', 'is_hammer_weekend', 'morning_star',
+       'is_morning_star_morning', 'is_morning_star_weekend',
+       'bullish_engulfing', 'is_bullish_engulfing_morning',
+       'is_bullish_engulfing_weekend', 'close_pct_change', 'close_lag_7',
+       'volume_pct_change', 'volume_lag_7', 'rsi_14_pct_change',
+       'rsi_14_lag_7', 'is_support', 'is_resistance', 'momentum_positive',
+       'momentum_negative', 'trend_reversal_signal',
+       'marker_close_pct_change_in_next_14_periods'],
+      dtype='object')
+
+Number of Columns:
+55
+
+Number of Rows:
+124216
+
+Last 3 rows:
+    open     high      low    close     volume    rsi_14  rsi_14_buy_signal  rsi_14_sell_signal     macd_12  macd_signal_9  macd_histogram_12  macd_buy_signal  macd_sell_signal        ema_9       ema_21  ema_buy_signal  ema_sell_signal   upper_band  middle_band   lower_band  bollinger_buy_signal  bollinger_sell_signal  rsi_macd_ratio  macd_signal_diff  close_time_hour  close_time_weekday  close_time_month  hour_sin  hour_cos  weekday_sin  weekday_cos  month_sin  month_cos  is_weekend  hammer  is_hammer_morning  is_hammer_weekend  morning_star  is_morning_star_morning  is_morning_star_weekend  bullish_engulfing  is_bullish_engulfing_morning  is_bullish_engulfing_weekend  close_pct_change  close_lag_7  volume_pct_change  volume_lag_7  rsi_14_pct_change  rsi_14_lag_7  is_support  is_resistance  momentum_positive  momentum_negative  trend_reversal_signal  marker_close_pct_change_in_next_14_periods
+94374.35 95400.00 94371.98 94664.51  851.23216 45.052319                  0                   0 -221.525223    -284.455300          62.930077                1                 0 94920.352020 95085.539993               0                1 96337.747066   94708.6435 93079.539934                     0                      0        0.715911       -347.385376               13                   0                 2 -0.258819 -0.965926          0.0          1.0   0.866025        0.5           0       0                  0                  0             0                        0                        0                  0                             0                             0          0.307446     95059.99           1.721628     785.08692           6.028545     47.140458           0              0                  1                  0                      1                                         0.0
+94664.52 94873.99 94131.14 94772.00  984.81108 46.011717                  0                   0 -216.669779    -270.898195          54.228417                1                 0 94890.681616 95057.036357               0                1 96285.273003   94779.5960 93273.918997                     0                      0        0.848480       -325.126612               14                   0                 2 -0.500000 -0.866025          0.0          1.0   0.866025        0.5           0       0                  0                  0             1                        0                        0                  0                             0                             0          0.113548     95702.67          15.692419     526.93303           2.129520     51.771117           0              0                  1                  0                      0                                         0.0
+94772.00 96511.64 94372.40 96073.88 1941.78676 56.026247                  0                   0 -114.084467    -239.535450         125.450983                1                 0 95127.321293 95149.476689               0                1 96247.638434   94943.9635 93640.288566                     0                      0        0.446599       -364.986433               14                   0                 2 -0.500000 -0.866025          0.0          1.0   0.866025        0.5           0       0                  0                  0             0                        0                        0                  0                             0                             0          1.373697     95413.87          97.173529     479.39562          21.765173     49.665584           0              1                  1                  0                      0                                         0.0

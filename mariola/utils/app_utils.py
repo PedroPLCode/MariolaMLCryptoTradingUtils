@@ -93,7 +93,7 @@ def save_df_info(df, filename):
         log(f"DataFrame saved to {filename}")
 
     
-@exception_handler(default_return=exit(1))    
+@exception_handler(default_return=exit)    
 def extract_settings_data(settings_filename):
     """
     Extracts and returns settings data from a JSON file.

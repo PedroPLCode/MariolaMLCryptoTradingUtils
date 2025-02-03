@@ -1,3 +1,4 @@
+import sys
 import json
 import functools
 import logging
@@ -50,12 +51,15 @@ def exception_handler(default_return=None):
                 json.JSONDecodeError
             ) as e:
                 exception_type = type(e).__name__
+                log(f'{exception_type}: {e}')
             except Exception as e:
                 exception_type = "Exception"
-
-            log(f'{exception_type}: {e}')
+                log(f'{exception_type}: {e}')
             
-            if callable(default_return):
+            if default_return is exit:
+                log('Exiting program due to an error.')
+                sys.exit(1)
+            elif callable(default_return):
                 return default_return()
             return default_return
 
