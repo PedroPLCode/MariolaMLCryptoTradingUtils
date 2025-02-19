@@ -3,7 +3,7 @@ MariolaMLCryptoTradingUtils - Predicting with XGBoost Model
 
 This script is responsible for making predictions using a pre-trained XGBoost model.
 The process includes loading settings and the model, fetching and preparing data,
-scaling features, and generating predictions. 
+scaling features, and generating predictions.
 
 Functions:
     predict_xgboost_model() - Main function for predicting using the XGBoost model.
@@ -34,6 +34,7 @@ from time import time
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
@@ -43,6 +44,7 @@ from utils.df_utils import prepare_ml_df
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
 from utils.plot_utils import visualise_model_prediction
+
 
 def predict_xgboost_model():
     """
@@ -71,40 +73,38 @@ def predict_xgboost_model():
     start_time = time()
 
     settings_filename, model_filename = get_parsed_arguments(
-        first_arg_string='Settings filename.json',
-        second_arg_string='Model filename.model'
+        first_arg_string="Settings filename.json",
+        second_arg_string="Model filename.model",
     )
 
     initialize_logger(settings_filename)
-    log(f"Received arguments: "
+    log(
+        f"Received arguments: "
         f"settings_filename={settings_filename}, "
-        f"model_filename={model_filename}")
+        f"model_filename={model_filename}"
+    )
 
     settings_data = extract_settings_data(settings_filename)
 
-    settings = settings_data['settings']
-    symbol = settings['symbol']
-    interval = settings['interval']
-    lookback = settings['lookback']
-    regression = settings['regression']
-    classification = settings['classification']
-    result_marker = settings['result_marker']
-    
+    settings = settings_data["settings"]
+    symbol = settings["symbol"]
+    interval = settings["interval"]
+    lookback = settings["lookback"]
+    regression = settings["regression"]
+    classification = settings["classification"]
+    result_marker = settings["result_marker"]
+
     log(f"Fetch actual {symbol} {interval} data.")
-    fetched_df = get_klines(
-        symbol=symbol, 
-        interval=interval, 
-        lookback=lookback
-    )
+    fetched_df = get_klines(symbol=symbol, interval=interval, lookback=lookback)
     log(f"Fetch completed.")
 
     log(f"Prepare DataFrame.")
     calculated_df = prepare_ml_df(
-        df=fetched_df, 
+        df=fetched_df,
         regression=regression,
         classification=classification,
         settings=settings,
-        training_mode=False
+        training_mode=False,
     )
     log(f"prepare_df completed.")
 
@@ -113,7 +113,7 @@ def predict_xgboost_model():
         X = calculated_df.fillna(0)
         X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
     log(f"Data preparation completed.")
-    
+
     log(f"Scaling the data using StandardScaler.")
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
@@ -134,19 +134,21 @@ def predict_xgboost_model():
 
     log(f"Converting the predictions to binary values (0 or 1).")
     if classification:
-        y_pred = (y_pred > 0.5)
+        y_pred = y_pred > 0.5
     log(f"Predictions ({'regression' if regression else 'classification'}):")
     for i, val in enumerate(y_pred[-10:]):
         log(f"Index {len(y_pred) - 10 + i}: {val}")
-        
+
     end_time = time()
 
-    log(f"{'regression' if regression else 'classification'} completed.\n"
+    log(
+        f"{'regression' if regression else 'classification'} completed.\n"
         f"Prediction based on latest data: {y_pred[-1]}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
     )
-    
+
     visualise_model_prediction(y_pred)
+
 
 if __name__ == "__main__":
     predict_xgboost_model()

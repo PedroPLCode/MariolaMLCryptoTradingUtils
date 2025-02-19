@@ -3,12 +3,13 @@ from datetime import datetime
 
 log_filename = None
 
-def initialize_logger(settings_filename):
+
+def initialize_logger(settings_filename: str) -> None:
     """
     Initializes the logger by loading the log file path from a JSON settings file.
 
-    Reads the `settings_filename` JSON file to extract the `log_filename` value, 
-    which determines where log messages will be written. If the file does not exist, 
+    Reads the `settings_filename` JSON file to extract the `log_filename` value,
+    which determines where log messages will be written. If the file does not exist,
     is invalid JSON, or does not contain the required key, the program exits with an error message.
 
     This function modifies the global variable `log_filename` with the log file path.
@@ -25,12 +26,12 @@ def initialize_logger(settings_filename):
         None
     """
     global log_filename
-    
+
     try:
-        with open(settings_filename, 'r') as f:
+        with open(settings_filename, "r") as f:
             settings_data = json.load(f)
-            log_filename = settings_data['settings']['log_filename']
-            
+            log_filename = settings_data["settings"]["log_filename"]
+
     except FileNotFoundError:
         print(f"Error: File {settings_filename} not found.")
         exit(1)
@@ -42,12 +43,12 @@ def initialize_logger(settings_filename):
         exit(1)
 
 
-def log(message):
+def log(message: str) -> None:
     """
     Logs a message to the console and appends it to the log file.
 
-    This function writes the provided message to both the console and a log file, 
-    along with the current timestamp. The logger must be initialized with 
+    This function writes the provided message to both the console and a log file,
+    along with the current timestamp. The logger must be initialized with
     `initialize_logger()` before calling this function.
 
     Parameters:
@@ -61,17 +62,19 @@ def log(message):
     """
     try:
         if log_filename is None:
-            raise RuntimeError("Logger has not been initialized. Call initialize_logger() first.")
-        
+            raise RuntimeError(
+                "Logger has not been initialized. Call initialize_logger() first."
+            )
+
         now = datetime.now()
-        formatted_now = now.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_now = now.strftime("%Y-%m-%d %H:%M:%S")
         log_message = f"[{formatted_now}] {message}"
-        
+
         print(log_message)
-        
-        with open(log_filename, 'a') as log_file:
-            log_file.write(log_message + '\n')
-        
+
+        with open(log_filename, "a") as log_file:
+            log_file.write(log_message + "\n")
+
     except Exception as e:
         print(e)
         return None

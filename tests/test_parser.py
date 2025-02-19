@@ -1,6 +1,7 @@
 import pytest
 from utils.parser_utils import get_parsed_arguments
 
+
 def test_get_parsed_arguments_with_one_argument(monkeypatch):
     test_args = ["script.py", "required_argument"]
     monkeypatch.setattr("sys.argv", test_args)
@@ -13,7 +14,9 @@ def test_get_parsed_arguments_with_two_arguments(monkeypatch):
     test_args = ["script.py", "required_argument", "optional_argument"]
     monkeypatch.setattr("sys.argv", test_args)
 
-    result = get_parsed_arguments("Description for the first argument", "Description for the second argument")
+    result = get_parsed_arguments(
+        "Description for the first argument", "Description for the second argument"
+    )
     assert result == ("required_argument", "optional_argument")
 
 
@@ -30,7 +33,9 @@ def test_get_parsed_arguments_help_message(monkeypatch, capsys):
     monkeypatch.setattr("sys.argv", test_args)
 
     with pytest.raises(SystemExit):
-        get_parsed_arguments("Description for the first argument", "Description for the second argument")
+        get_parsed_arguments(
+            "Description for the first argument", "Description for the second argument"
+        )
 
     captured = capsys.readouterr()
     assert "A script that accepts one or two arguments." in captured.out

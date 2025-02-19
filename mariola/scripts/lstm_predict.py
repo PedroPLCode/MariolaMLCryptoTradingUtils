@@ -1,10 +1,10 @@
 """
 MariolaMLCryptoTradingUtils - Predicting with LSTM Model
 
-This script is responsible for making predictions using a pre-trained LSTM model. 
-It takes settings and model filenames as inputs, fetches data from Binance, processes it 
-by normalizing, performing PCA, and creating sequences, and then makes predictions based 
-on the trained LSTM model. The predictions can be for either regression or classification 
+This script is responsible for making predictions using a pre-trained LSTM model.
+It takes settings and model filenames as inputs, fetches data from Binance, processes it
+by normalizing, performing PCA, and creating sequences, and then makes predictions based
+on the trained LSTM model. The predictions can be for either regression or classification
 tasks, depending on the settings. The result is logged throughout the process.
 
 Functions:
@@ -32,9 +32,11 @@ Author:
 Last Update:
     2025-01-25
 """
+
 import sys
 from time import time
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from tensorflow.keras.models import load_model
 from utils.app_utils import extract_settings_data
@@ -43,11 +45,8 @@ from utils.df_utils import prepare_ml_df
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
 from utils.plot_utils import visualise_model_prediction
-from utils.ml_utils import (
-    normalize_df, 
-    handle_pca, 
-    create_sequences
-)
+from utils.ml_utils import normalize_df, handle_pca, create_sequences
+
 
 def predict_lstm_model():
     """
@@ -77,93 +76,92 @@ def predict_lstm_model():
     Example:
         python3 predict_lstm_model.py settings.json trained_model.keras
     """
-    
+
     start_time = time()
 
     settings_filename, model_filename = get_parsed_arguments(
-        first_arg_string='Settings filename.json',
-        second_arg_string='Model filename.keras'
+        first_arg_string="Settings filename.json",
+        second_arg_string="Model filename.keras",
     )
 
     initialize_logger(settings_filename)
-    log(f"Received arguments: "
+    log(
+        f"Received arguments: "
         f"settings_filename={settings_filename}, "
-        f"model_filenama={model_filename}")
-
+        f"model_filenama={model_filename}"
+    )
 
     settings_data = extract_settings_data(settings_filename)
-    settings=settings_data['settings']
-    symbol=settings_data['settings']['symbol']
-    interval=settings_data['settings']['interval']
-    lookback=settings_data['settings']['lookback']
-    regression=settings_data['settings']['regression']
-    classification=settings_data['settings']['classification']
-    result_marker=settings_data['settings']['result_marker']
-    window_size=settings_data['settings']['window_size']
-    window_lookback=settings_data['settings']['window_lookback']
+    settings = settings_data["settings"]
+    symbol = settings_data["settings"]["symbol"]
+    interval = settings_data["settings"]["interval"]
+    lookback = settings_data["settings"]["lookback"]
+    regression = settings_data["settings"]["regression"]
+    classification = settings_data["settings"]["classification"]
+    result_marker = settings_data["settings"]["result_marker"]
+    window_size = settings_data["settings"]["window_size"]
+    window_lookback = settings_data["settings"]["window_lookback"]
 
     log(f"Fetch actual {symbol} {interval} data.")
     fetched_df = get_klines(
-        symbol=symbol, 
-        interval=interval, 
+        symbol=symbol,
+        interval=interval,
         lookback=lookback,
-        )
-    log(f"Fetch completed.\n"
+    )
+    log(
+        f"Fetch completed.\n"
         f"symbol: {symbol}\n"
         f"interval: {interval}\n"
         f"lookback: {lookback}\n"
         f"len(data_df): {len(fetched_df)}"
-        )
+    )
 
-    log(f"Prepare DataFrame.\n"
+    log(
+        f"Prepare DataFrame.\n"
         f"starting prepare_df.\n"
         f"regression: {regression}\n"
         f"classification: {classification}"
-        )
+    )
     calculated_df = prepare_ml_df(
-        df=fetched_df, 
+        df=fetched_df,
         regression=regression,
         classification=classification,
         settings=settings,
-        training_mode=False
-        )
+        training_mode=False,
+    )
     log(f"prepare_df completed.")
 
-    log(f"Normalize data."
-        f"starting normalize_df."
-        )
+    log(f"Normalize data." f"starting normalize_df.")
     df_normalized = normalize_df(
-        df=calculated_df,
-        training_mode=False,
-        result_marker=result_marker
-        )
+        df=calculated_df, training_mode=False, result_marker=result_marker
+    )
     log(f"normalize_df completed.")
 
-    log(f"Principal Component Analysis.\n"
+    log(
+        f"Principal Component Analysis.\n"
         f"starting handle_pca.\n"
         f"result_marker: {result_marker}"
-        )
+    )
     df_reduced = handle_pca(
-        df_normalized=df_normalized, 
-        loaded_df=calculated_df, 
-        result_marker=None
-        )
+        df_normalized=df_normalized, loaded_df=calculated_df, result_marker=None
+    )
     log(f"handle_pca completed.")
 
-    log(f"Create sequences.\n"
+    log(
+        f"Create sequences.\n"
         f"starting create_sequences.\n"
         f"len(df_reduced): {len(df_reduced)}\n"
         f"window_size: {window_size}\n"
         f"lookback: {window_lookback}\n"
         f"result_marker: {result_marker}"
-        )
+    )
     X = create_sequences(
-        df_reduced=df_reduced, 
-        lookback=window_lookback, 
+        df_reduced=df_reduced,
+        lookback=window_lookback,
         window_size=window_size,
         result_marker=result_marker,
-        training_mode=False
-        )
+        training_mode=False,
+    )
     log(f"create_sequences completed.")
 
     log(f"Load the saved model.")
@@ -176,19 +174,21 @@ def predict_lstm_model():
 
     log(f"Converting the predictions to binary values (0 or 1).")
     if classification:
-        y_pred = (y_pred > 0.5)
+        y_pred = y_pred > 0.5
     log(f"Predictions ({'regression' if regression else 'classification'}):")
     for i, val in enumerate(y_pred[-10:]):
         log(f"Index {len(y_pred) - 10 + i}: {val}")
 
     end_time = time()
 
-    log(f"{'regression' if regression else 'classification'} completed.\n"
+    log(
+        f"{'regression' if regression else 'classification'} completed.\n"
         f"Prediction based on latest data: {y_pred[-1]}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
-        )
-    
+    )
+
     visualise_model_prediction(y_pred)
-    
+
+
 if __name__ == "__main__":
     predict_lstm_model()

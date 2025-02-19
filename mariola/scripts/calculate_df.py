@@ -1,14 +1,14 @@
 """
 MariolaMLCryptoTradingUtils - DataFrame Calculation
 
-This script provides functionality for calculating technical analysis parameters 
-from historical cryptocurrency data fetched via Binance API. 
-The script processes a CSV file with historical klines data and saves 
+This script provides functionality for calculating technical analysis parameters
+from historical cryptocurrency data fetched via Binance API.
+The script processes a CSV file with historical klines data and saves
 the processed DataFrame with additional parameters based on user-defined settings.
 
 Functions:
     calculate_df() - Main function for loading, processing, and saving DataFrame data.
-    
+
 Requirements:
     - logger_utils: Functions for initializing and using a logger.
     - parser_utils: Functions for parsing command-line arguments.
@@ -19,7 +19,7 @@ Usage:
     Run the script with two arguments:
     1. JSON settings file containing configuration for regression and classification.
     2. CSV file with historical klines data to process.
-    
+
     Example:
         python calculate_df.py settings.json historical_data.csv
 
@@ -33,16 +33,18 @@ Last Update:
 import sys
 from time import time
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.logger_utils import initialize_logger, log
 from utils.parser_utils import get_parsed_arguments
 from utils.df_utils import prepare_ml_df
 from utils.app_utils import (
-    extract_settings_data, 
+    extract_settings_data,
     load_data_from_csv,
-    save_data_to_csv, 
-    save_df_info
+    save_data_to_csv,
+    save_df_info,
 )
+
 
 def calculate_df():
     """
@@ -76,51 +78,56 @@ def calculate_df():
     start_time = time()
 
     settings_filename, data_filename = get_parsed_arguments(
-        first_arg_string='Settings filename.json',
-        second_arg_string='Klines full historical data filename.csv'
+        first_arg_string="Settings filename.json",
+        second_arg_string="Klines full historical data filename.csv",
     )
 
     initialize_logger(settings_filename)
-    log(f"Calculating DataFrame process starting.\n"
+    log(
+        f"Calculating DataFrame process starting.\n"
         f"Received filename arguments: {settings_filename} {data_filename}"
-        )
+    )
 
     settings_data = extract_settings_data(settings_filename)
-    settings = settings_data['settings']
-    regression = settings_data['settings']['regression']
-    classification = settings_data['settings']['classification']
+    settings = settings_data["settings"]
+    regression = settings_data["settings"]["regression"]
+    classification = settings_data["settings"]["classification"]
 
-    log(f"Load data from csv file.\n"
+    log(
+        f"Load data from csv file.\n"
         f"Starting load_data_from_csv.\n"
         f"Filename: {data_filename}"
-        )
+    )
     data_df = load_data_from_csv(data_filename)
     log(f"load_data_from_csv completed.")
 
-    log(f"Prepare DataFrame.\n"
+    log(
+        f"Prepare DataFrame.\n"
         f"Starting prepare_df.\n"
         f"Regression: {regression}\n"
         f"Classification: {classification}"
-        )
+    )
     result_df = prepare_ml_df(
-        df=data_df, 
+        df=data_df,
         regression=regression,
         classification=classification,
         settings=settings,
-        training_mode=True
+        training_mode=True,
     )
 
-    csv_filename = data_filename.replace('_fetched', '_calculated')
-    info_filename = csv_filename.replace('csv', 'info')
+    csv_filename = data_filename.replace("_fetched", "_calculated")
+    info_filename = csv_filename.replace("csv", "info")
     save_data_to_csv(result_df, csv_filename)
     save_df_info(result_df, info_filename)
 
     end_time = time()
-    log(f"Calculating Technical Analysis parameters completed.\n"
+    log(
+        f"Calculating Technical Analysis parameters completed.\n"
         f"prepare_df completed and result_df saved to {csv_filename}.\n"
         f"{'Regression' if regression else 'Classification'}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
-        )
+    )
+
 
 if __name__ == "__main__":
     calculate_df()

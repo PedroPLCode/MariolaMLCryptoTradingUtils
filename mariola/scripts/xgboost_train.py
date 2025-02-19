@@ -1,8 +1,8 @@
 """
 MariolaMLCryptoTradingUtils - Training XGBoost Model
 
-This script is responsible for training an XGBoost model (regression or classification) 
-using prepared data. The process includes loading CSV files with data and configuration, 
+This script is responsible for training an XGBoost model (regression or classification)
+using prepared data. The process includes loading CSV files with data and configuration,
 preparing features, training the model, evaluating results, and saving the trained model.
 
 Functions:
@@ -21,7 +21,7 @@ Usage:
 
     Example:
         python3 train_xgboost_model.py settings.json calculated_df.csv
-        
+
 Author:
     PedroMolina
 
@@ -33,6 +33,7 @@ import sys
 from time import time
 import numpy as np
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier, XGBRegressor
@@ -41,14 +42,12 @@ from sklearn.metrics import mean_squared_error, r2_score
 from utils.parser_utils import get_parsed_arguments
 from utils.logger_utils import initialize_logger, log
 from utils.plot_utils import visualise_model_performance
-from utils.app_utils import (
-    extract_settings_data, 
-    load_data_from_csv
-)
+from utils.app_utils import extract_settings_data, load_data_from_csv
+
 
 def train_xgboost_model():
     """
-    Trains an XGBoost regression or classification model using data from a CSV file 
+    Trains an XGBoost regression or classification model using data from a CSV file
     and settings from a JSON file.
 
     The function performs the following steps:
@@ -76,26 +75,29 @@ def train_xgboost_model():
     start_time = time()
 
     settings_filename, data_filename = get_parsed_arguments(
-        first_arg_string='Settings filename.json',
-        second_arg_string='Calculated and prepared data filename.csv'
+        first_arg_string="Settings filename.json",
+        second_arg_string="Calculated and prepared data filename.csv",
     )
 
     initialize_logger(settings_filename)
-    log(f"Received arguments: "
+    log(
+        f"Received arguments: "
         f"settings_filename={settings_filename}, "
-        f"data_filename={data_filename}")
+        f"data_filename={data_filename}"
+    )
 
     settings_data = extract_settings_data(settings_filename)
-    regression = settings_data['settings']['regression']
-    classification = settings_data['settings']['classification']
-    result_marker = settings_data['settings']['result_marker']
-    test_size = settings_data['settings']['test_size']
-    random_state = settings_data['settings']['random_state']
+    regression = settings_data["settings"]["regression"]
+    classification = settings_data["settings"]["classification"]
+    result_marker = settings_data["settings"]["result_marker"]
+    test_size = settings_data["settings"]["test_size"]
+    random_state = settings_data["settings"]["random_state"]
 
-    log(f"Loading data from CSV file.\n"
+    log(
+        f"Loading data from CSV file.\n"
         f"Starting load_data_from_csv.\n"
         f"Filename: {data_filename}"
-        )
+    )
     loaded_df = load_data_from_csv(data_filename)
     log(f"Data loading completed.")
 
@@ -111,11 +113,8 @@ def train_xgboost_model():
 
     log(f"Splitting the data into training and testing sets.")
     X_train, X_test, y_train, y_test = train_test_split(
-        X, 
-        y, 
-        test_size=test_size, 
-        random_state=random_state
-        )
+        X, y, test_size=test_size, random_state=random_state
+    )
     log(f"Data split completed.")
 
     log(f"Handle missing or infinite values in training and testing sets.")
@@ -130,34 +129,35 @@ def train_xgboost_model():
     log(f"Data scaling completed.")
 
     log(f"Creating the XGBoost model.")
-    
+
     if classification:
         model = XGBClassifier(
-            objective='binary:logistic', 
-            eval_metric='logloss', 
+            objective="binary:logistic",
+            eval_metric="logloss",
             random_state=random_state,
             n_estimators=2000,
             learning_rate=0.1,
             max_depth=6,
             min_child_weight=1,
-            subsample=0.8
+            subsample=0.8,
         )
     elif regression:
         model = XGBRegressor(
-            objective='reg:squarederror', 
-            eval_metric='rmse', 
+            objective="reg:squarederror",
+            eval_metric="rmse",
             n_estimators=2000,
             learning_rate=0.1,
             max_depth=6,
             min_child_weight=1,
-            subsample=0.8
+            subsample=0.8,
         )
     log(f"Model created.")
 
-    log(f"Training the model.\n"
+    log(
+        f"Training the model.\n"
         f"Shape of X_train: {X_train_scaled.shape}\n"
         f"Shape of y_train: {y_train.shape}"
-        )
+    )
     model.fit(X_train_scaled, y_train)
     log(f"Training completed.")
 
@@ -167,27 +167,29 @@ def train_xgboost_model():
     mse = mean_squared_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
 
-    log(f'Mean Squared Error: {mse}')
-    log(f'R-squared: {r2}')
+    log(f"Mean Squared Error: {mse}")
+    log(f"R-squared: {r2}")
 
-    model_filename = data_filename.replace('df_', 'model_').replace('_calculated', '_xgboost').replace('csv', 'model')
+    model_filename = (
+        data_filename.replace("df_", "model_")
+        .replace("_calculated", "_xgboost")
+        .replace("csv", "model")
+    )
     model.save_model(model_filename)
     log(f"Model saved as {model_filename}")
-    
+
     end_time = time()
 
-    log(f"XGBoost Model training completed.\n"
+    log(
+        f"XGBoost Model training completed.\n"
         f"{'Regression' if regression else 'Classification'}\n"
         f"Time taken: {end_time - start_time:.2f} seconds"
-        )
+    )
 
     visualise_model_performance(
-        y_test, 
-        y_pred, 
-        result_marker, 
-        regression, 
-        classification
-        )
-    
+        y_test, y_pred, result_marker, regression, classification
+    )
+
+
 if __name__ == "__main__":
     train_xgboost_model()

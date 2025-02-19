@@ -1,6 +1,7 @@
 from unittest.mock import patch
 from mariola.fetch_data import fetch_data
 
+
 @patch("mariola.log")
 @patch("utils.logger_utils.initialize_logger")
 @patch("utils.app_utils.extract_settings_data")
@@ -39,27 +40,38 @@ def test_fetch_data_full_flow(
     )
     mock_initialize_logger.assert_called_once_with("test_settings.json")
     mock_extract_settings_data.assert_called_once_with("test_settings.json")
-    mock_log.assert_any_call("MariolaCryptoTradingBot. Fetch starting.\nReceived filename argument: test_settings.json")
+    mock_log.assert_any_call(
+        "MariolaCryptoTradingBot. Fetch starting.\nReceived filename argument: test_settings.json"
+    )
     mock_get_full_historical_klines.assert_called_once_with(
         symbol="BTCUSDT", interval="1m", start_str="1 day ago UTC"
     )
-    mock_save_data_to_csv.assert_called_once_with([["fake", "data"]], "data/df_step_1_fetched.csv")
+    mock_save_data_to_csv.assert_called_once_with(
+        [["fake", "data"]], "data/df_step_1_fetched.csv"
+    )
     mock_save_df_info.assert_called_once_with(
         [["fake", "data"]], "data/df_step_1_fetched.info"
     )
-    mock_log.assert_any_call("MariolaCryptoTradingBot Fetching historical data completed.\nTotal steps: 1\nTime taken: ")
+    mock_log.assert_any_call(
+        "MariolaCryptoTradingBot Fetching historical data completed.\nTotal steps: 1\nTime taken: "
+    )
 
 
 @patch("mariola.log")
 def test_fetch_data_dry_run(mock_log):
-    with patch("utils.parser_utils.get_parsed_arguments", return_value=("test_settings.json", "yes")), \
-         patch("utils.logger_utils.initialize_logger"), \
-         patch("utils.app_utils.extract_settings_data", return_value={"fetch_sequence": {}}):
+    with patch(
+        "utils.parser_utils.get_parsed_arguments",
+        return_value=("test_settings.json", "yes"),
+    ), patch("utils.logger_utils.initialize_logger"), patch(
+        "utils.app_utils.extract_settings_data", return_value={"fetch_sequence": {}}
+    ):
 
         fetch_data()
 
     mock_log.assert_any_call("Dry run mode enabled. No data will be fetched or saved.")
-    mock_log.assert_any_call("MariolaCryptoTradingBot. Fetch starting.\nReceived filename argument: test_settings.json")
+    mock_log.assert_any_call(
+        "MariolaCryptoTradingBot. Fetch starting.\nReceived filename argument: test_settings.json"
+    )
 
 
 @patch("mariola.log")
@@ -67,10 +79,14 @@ def test_fetch_data_dry_run(mock_log):
 def test_fetch_data_missing_settings(mock_extract_settings_data, mock_log):
     mock_extract_settings_data.side_effect = ValueError("Invalid settings file.")
 
-    with patch("utils.parser_utils.get_parsed_arguments", return_value=("invalid.json", "no")):
+    with patch(
+        "utils.parser_utils.get_parsed_arguments", return_value=("invalid.json", "no")
+    ):
         fetch_data()
 
-    mock_log.assert_any_call("Error during data fetching for step None: Invalid settings file.")
+    mock_log.assert_any_call(
+        "Error during data fetching for step None: Invalid settings file."
+    )
 
 
 @patch("mariola.log")
@@ -79,7 +95,8 @@ def test_fetch_data_api_error(mock_get_full_historical_klines, mock_log):
     mock_get_full_historical_klines.side_effect = Exception("API error")
 
     with patch(
-        "utils.parser_utils.get_parsed_arguments", return_value=("test_settings.json", "no")
+        "utils.parser_utils.get_parsed_arguments",
+        return_value=("test_settings.json", "no"),
     ), patch(
         "fetch_data.extract_settings_data",
         return_value={

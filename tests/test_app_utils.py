@@ -7,16 +7,13 @@ from utils.app_utils import (
     load_data_from_csv,
     save_df_info,
     extract_settings_data,
-    save_dataframe_with_info
+    save_dataframe_with_info,
 )
+
 
 @pytest.fixture
 def sample_dataframe():
-    return pd.DataFrame({
-        "A": [1, 2, 3],
-        "B": [4, 5, 6],
-        "C": [7, 8, 9]
-    })
+    return pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
 
 
 @pytest.fixture

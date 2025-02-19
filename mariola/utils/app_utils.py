@@ -1,10 +1,12 @@
 import json
 import pandas as pd
+from typing import Union, Optional, Callable
 from utils.logger_utils import log
 from utils.exception_handler import exception_handler
 
+
 @exception_handler()
-def save_data_to_csv(data, filename):
+def save_data_to_csv(data: pd.DataFrame, filename: str) -> Optional[int]:
     """
     Saves the provided data to a CSV file.
 
@@ -26,13 +28,13 @@ def save_data_to_csv(data, filename):
     if data is None:
         log(f"Error in save_data_to_csv. data id None.\n{data}")
         return None
-        
+
     data.to_csv(filename, index=False)
     log(f"Klines data saved to {filename}")
 
 
 @exception_handler()
-def load_data_from_csv(filename):
+def load_data_from_csv(filename: str) -> Union[pd.DataFrame, Optional[int]]:
     """
     Loads data from a CSV file into a pandas DataFrame.
 
@@ -53,15 +55,15 @@ def load_data_from_csv(filename):
     if not filename:
         log("Error in load_data_from_csv. Filemane not provided")
         return None
-    
+
     df = pd.read_csv(filename)
     log(f"Klines data loaded from {filename}")
-        
+
     return df
 
 
 @exception_handler()
-def save_df_info(df, filename):
+def save_df_info(df: pd.DataFrame, filename: str) -> Optional[int]:
     """
     Saves basic information and the last 3 rows of a pandas DataFrame to a file.
 
@@ -80,8 +82,8 @@ def save_df_info(df, filename):
     """
     if df is None or df.empty or not filename:
         raise ValueError("df and filename must be provided and cannot be None.")
-    
-    with open(filename, 'w') as f:
+
+    with open(filename, "w") as f:
         f.write("Pandas DataFrame:\n")
         f.write(str(df.columns) + "\n\n")
         f.write("Number of Columns:\n")
@@ -92,14 +94,14 @@ def save_df_info(df, filename):
         f.write(df.tail(3).to_string(index=False))
         log(f"DataFrame saved to {filename}")
 
-    
-@exception_handler(default_return=exit)    
-def extract_settings_data(settings_filename):
+
+@exception_handler(default_return=exit)
+def extract_settings_data(settings_filename: str) -> Union[str, Callable]:
     """
     Extracts and returns settings data from a JSON file.
 
-    This function reads the specified JSON file and parses its content into a Python dictionary. 
-    Logs a message upon successfully loading the settings or logs an appropriate error message 
+    This function reads the specified JSON file and parses its content into a Python dictionary.
+    Logs a message upon successfully loading the settings or logs an appropriate error message
     and exits the program if an error occurs.
 
     Parameters:
@@ -113,16 +115,18 @@ def extract_settings_data(settings_filename):
         json.JSONDecodeError: If the file is not a valid JSON format.
         Exception: For any other unexpected errors.
     """
-    with open(settings_filename, 'r') as f:
+    with open(settings_filename, "r") as f:
         settings_data = json.load(f)
-        
+
     log(f"Successfully loaded settings from {settings_filename}")
-    
+
     return settings_data
 
-        
-@exception_handler()        
-def save_dataframe_with_info(dataframe, base_filename, stage_name):
+
+@exception_handler()
+def save_dataframe_with_info(
+    dataframe: pd.DataFrame, base_filename: str, stage_name: str
+) -> Optional[int]:
     """
     Saves a DataFrame to a CSV file and logs information about the saved data.
 
@@ -140,7 +144,7 @@ def save_dataframe_with_info(dataframe, base_filename, stage_name):
     >>> save_dataframe_with_info(df, 'data_calculated.csv', 'normalized')
     Data saved to data_normalized.csv.
     """
-    csv_filename = base_filename.replace('_calculated', f'_{stage_name}')
-    info_filename = csv_filename.replace('csv', 'info')
+    csv_filename = base_filename.replace("_calculated", f"_{stage_name}")
+    info_filename = csv_filename.replace("csv", "info")
     save_df_info(dataframe, info_filename)
     log(f"{stage_name.capitalize()} data saved to {csv_filename}.")
