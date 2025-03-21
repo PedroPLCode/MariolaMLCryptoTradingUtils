@@ -37,9 +37,9 @@ def exception_handler(default_return=None):
         - Returns `default_return` in case of an error.
     """
 
-    def decorator(func):
+    def exception_handler_decorator(func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def exception_handler_wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
             except (
@@ -65,6 +65,6 @@ def exception_handler(default_return=None):
                 return default_return()
             return default_return
 
-        return wrapper
+        return exception_handler_wrapper
 
-    return decorator
+    return exception_handler_decorator

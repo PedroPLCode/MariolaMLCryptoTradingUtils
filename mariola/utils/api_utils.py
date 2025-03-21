@@ -6,12 +6,14 @@ from binance.client import Client
 import os
 from utils.logger_utils import log
 from utils.exception_handler import exception_handler
+from utils.retry_connection import retry_connection
 from typing import Optional, Union
 
 load_dotenv()
 
 
 @exception_handler()
+@retry_connection()
 def create_binance_client() -> Optional[Client]:
     """
     Creates and returns a Binance client using API keys from environment variables.
@@ -28,6 +30,7 @@ def create_binance_client() -> Optional[Client]:
 
 
 @exception_handler()
+@retry_connection()
 def get_klines(
     symbol: str = "BTCUSDC",
     interval: str = "1h",
@@ -109,6 +112,7 @@ def get_klines(
 
 
 @exception_handler()
+@retry_connection()
 def get_full_historical_klines(
     symbol: str = "BTCUSDC", interval: str = "1h", start_str: Union[str, int] = None
 ) -> Optional[pd.DataFrame]:
